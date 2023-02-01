@@ -34,4 +34,11 @@ Express mode for almost all** passes (apart from NFCF and REDACTED) is implement
 
 Other features (Gymkit, CarKey setup, VAS, Ignore other iphone NFC field) use ECP as well.
 
+
+ECP (reader side) can be impleneted in software on many NFC devices, provided that a low-level access to hardware is available (AKA no Android and IOS*).   
+Proof of concept was successfuly tested using PN532, PN5180, ST25R3916 chips.
+
+Device side ECP is (probably) implemented using a customized CRS applet developed by NXP exclusively for Apple.
+
+
 More info will be added here soon©.
