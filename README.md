@@ -2,7 +2,7 @@
 
 ---
 
-![Video demonstrating ECP](/assets/ECP.DEMO.gif)
+![Video demonstrating ECP](/assets/ECP.DEMO.webp)
 
 
 Enhanced Contactless Polling/Protocol is a proprietary extension to the ISO14443 standard developed by Apple.   
