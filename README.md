@@ -35,7 +35,9 @@ Express mode for most passes (apart from NFC-F and CATHAY) is implemented using 
 Other features use ECP as well:
 - Value Added Services (VAS):  
   Allows reader to select the VAS applet and try to get pass in advance (although failing to do so), causing pass to appear on a screen for authentication or under a payment card if one is selected.  
-  <img src="./assets/VAS.DEMO.webp" alt="![Image showing VAS]" width=250px>
+  <img src="./assets/VASONLY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
+  <img src="./assets/VASANDPAY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
+  <img src="./assets/VASANDPAY.AFTER.DEMO.webp" alt="![Image showing VAS]" width=200px>
 - GymKit:  
   Makes apple watch act as an NDEF tag for BLE handover in order to connect to supported gym equipment.  
   <img src="./assets/GYMKIT.DEMO.webp" alt="![Image showing GymKit setup]" width=150px>
@@ -90,7 +92,7 @@ ECP frame can be sent using either A or B modulation. Diagram shows a scenario w
 Upon entering a loop, device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies does the field poll for, allowing it to make a fully informed decision on what applet to select later.
 
 
-When devices makes a decision, it is mostly, although not in all cases (excluding keys) signified by a card image appearing along with a spinner.
+When device makes a decision, it is mostly, although not in all cases (excluding keys) signified by a card image appearing along with a spinner.
 
 
 <img src="./assets/EM.DECISION.webp" alt="![Image showing express mode animation after decision]" width=250px>
