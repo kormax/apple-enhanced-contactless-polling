@@ -1,7 +1,5 @@
 # Apple Enchanced Contactless Polling (ECP)
 
----
-
 ![Video demonstrating ECP](/assets/ECP.DEMO.webp)
 
 
@@ -38,7 +36,6 @@ Other features (Gymkit, CarKey setup, VAS, Field ignore) use ECP as well.
 
 ## Device support
 
----
 
 Reader side:
 * Can be impleneted in software on many  devices, provided that a low-level access to NFC hardware is available.  
@@ -52,12 +49,10 @@ Device side:
 
 ## Communication flow
 
----
 
 ECP-equiped readers operate in a following polling loop:
 
 ```mermaid
-flowchart TB
 flowchart TB
 A(WUPA) --> AR{GOT ATQA?}
 AR --> |No| EA(ECP_A)
@@ -76,8 +71,6 @@ ECP frame can be sent using either A or B modulation. Diagram shows a scenario w
 
 
 ## Decision logic
-
----
 
 
 Upon entering a loop, device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies does the field poll for, allowing it to make a fully informed decision on what applet to select later.
@@ -140,7 +133,6 @@ Although probably not possible during normal operation, if a reader is polling f
 
 ## Structure
 
----
 
 Each ECP frame consists of a header, version, data part and CRC:
 
