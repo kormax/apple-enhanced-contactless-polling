@@ -63,36 +63,14 @@ Device side:
 * Implemented using a customized CRS applet.
 
 
-## Communication flow
-
-
-ECP-equiped readers operate in a following polling loop:
-
-```mermaid
-flowchart TB
-A(WUPA) --> AR{GOT ATQA?}
-AR --> |No| EA(ECP_A)
-AR --> |Yes| INIT(INITIALIZE)
-EA --> B(WUPB)
-B --> BR{GOT ATQB?}
-BR --> |No| EB(ECP_B)
-BR --> |Yes| INIT
-EB --> F(SENSF_REQ)
-F --> FR{GOT SENSF_RES?}
-FR --> |Yes| INIT
-FR --> |No| A
-```
-
-ECP frame can be sent using either A or B modulation. Diagram shows a scenario when reader polls for A, B, F cards, although any part of it can be skipped.
-
-
 ## Decision logic
 
 
 Upon entering a loop, device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies does the field poll for, allowing it to make a fully informed decision on what applet to select later.
 
-
 When device makes a decision, it is mostly, although not in all cases (excluding keys) signified by a card image appearing along with a spinner.
+
+Even though ECP is sent during the polling loop, device does not answer to it. Instead it responds to a polling frame related to technology of the pass that the device had decided to use.
 
 
 <img src="./assets/EM.DECISION.webp" alt="![Image showing express mode animation after decision]" width=250px>
@@ -140,9 +118,9 @@ In conclusion, it seems that if reader is polling for:
 * 2 technologies, decision is made after the second polling loop, while the response is given on the third.
 * 3 technologies, decision is made after the first loop, response is given on the second.
 
-Tests were conducted using very big intervals between polling frames. IRL if polling is faster device might respond after more frames than shown, probably because of internal processing delay.  
+Tests were conducted using very big intervals between polling frames. IRL if polling is faster device might respond after more frames than shown, presumably because of internal processing delay.  
 
-Although probably not possible during normal operation, if a reader is polling for multiple cards using express mode that use different technology qualifiers for selection, following technology priority will be applied:
+Although not possible during normal operation, if a reader is polling for multiple cards using express mode that use different technology qualifiers for selection, following technology priority will be applied:
 1. ECP 
 2. NFC-F
 3. CATHAY  
@@ -161,7 +139,7 @@ Each ECP frame consists of a header, version, data part and CRC:
 ```
 - Header byte has a constant value of (HEX) 6A;
 - Version number can be either 1 or 2;
-- Data part: REDACTED;
+- Data part: Version-dependant. REDACTED;
 - CRC (Calculated via ISO14443A/B algorithm, according to the modulation used).
 
 
