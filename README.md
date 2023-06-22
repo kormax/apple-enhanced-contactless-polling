@@ -55,7 +55,7 @@ Other features use ECP as well:
 
 
 Reader side:
-* Can be impleneted in software on many  devices, provided that a low-level access to NFC hardware is available.  In some cases it is needed to reimplement the protocol stack in software when doing so.  
+* Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
   Proof of concept was successfuly tested using PN532, PN5180, ST25R3916 chips;
 * IOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
