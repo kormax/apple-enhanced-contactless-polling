@@ -179,7 +179,7 @@ For V2 COMING SOON:
 
 ### TCI
 
-TCI, also referred to as Terminal Capabilities Identifier, is an arbitrary three-byte-long integer that establishes reader field connection to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
+TCI, also referred to as Terminal Capabilities Identifier, is an arbitrary three-byte-long integer that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
 
 There are following limitations of TCI usage:
 - Some TCIs are bound to a reader with particular type and subtype (which requires V2), while others trigger for all types (support V1). It is not known if it is a bug or was intentional.  
