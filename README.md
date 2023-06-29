@@ -175,7 +175,7 @@ For V1 payload consists only of a single TCI:
     XX XX XX
      [TCI]  
   ```
-- TCI is a 3 byte long identifier
+- TCI is a 3 byte long identifier. More info below.
   
 
 For V2 payload contains terminal configuration, terminal type, terminal subtype, and data:  
@@ -190,24 +190,30 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
     ```
     - Auth: 0b1 if authentication not required, 0b0 otherwise.  
       If auth is required pass will be presented on a screen for manual authentication when brought near to the field.
-    - Length: defines a length of extra data.
+    - Length: defines a length of data.
   - Type contains terminal type:
     - 0x01: Transit;
     - 0x02: Access;
     - 0x03: Identity (Handoff);
     - 0x05: AirDrop.
   - Subtype depends on type. In most cases it has a value of 0x00;
-  - Data. Its content and availability depend on terminal type and subtype:
-    ```
-      XX XX XX...        XX..
-      [TCIs (n)]   [Extra data (n)]
-    ``` 
-    - TCIs defines an array of 3 byte long indentifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype, but in practice exactly one is used always;
-    - Extra data contents depend on terminal type, subtype, and TCIs:
-      * For access/key readers it may contain a 8 byte long unique reader group identifier, which allows to differentiate between them for passes of the same type;
-      * For HomeKit it contains pairing information;
-      * For NameDrop it carries a 6 byte long BLE MAC address;
-      * For AirDrop it carries a 6 byte long zeroed out value.
+  - Data. Its content and availability depend on terminal type and subtype. Detailed description below.
+
+
+### Data
+
+Data is a part of payload in V2, it contains TCIs and extra data:
+
+```
+  XX XX XX...        XX..
+  [TCIs (n)]   [Extra data (n)]
+``` 
+- TCIs define an array of 3 byte long indentifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype, but in practice exactly one is used always;
+- Extra data contents depend on terminal type, subtype, and TCIs:
+  * For access/key readers it may contain a 8 byte long unique reader group identifier, which allows to differentiate between them for passes of the same type;
+  * For HomeKit it contains pairing information;
+  * For NameDrop it carries a 6 byte long BLE MAC address;
+  * For AirDrop it carries a 6 byte long zeroed out value.
 
 ### TCI
 
