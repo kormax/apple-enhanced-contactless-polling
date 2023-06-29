@@ -242,7 +242,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | VAS only         | 01       | NA     | NA      | 00 00 02         | NA                 |                                                  |
 | Payment only     | 01       | NA     | NA      | 00 00 03         | NA                 |                                                  |
 | Ignore           | 01       | NA     | NA      | cf 00 00         | NA                 |                                                  |
-| AirDrop          | 02       | 05     | 00      | 01 00 00         | 00 00 00 00 00 00  | Send only after device sees a NameDrop frame     |
+| AirDrop          | 02       | 05     | 00      | 01 00 00         | 00 00 00 00 00 00  | Sent only after device sees a NameDrop frame     |
 | NameDrop         | 02       | 05     | 00      | 01 00 01         | XX XX XX XX XX XX  | Data part contains MAC-address                   |
 
 
@@ -257,7 +257,7 @@ Examples contain fullframes with CRC calculated for ISO14443-A;
     [Header]  [Version]   [TCI]   [CRC-A]
   ```
 
-  Note that for frame to work 8-bit byte setting should be set in case of NFC-A.
+Note that for examples to work 8-bit byte setting should be set in case of NFC-A.
 
 
 
