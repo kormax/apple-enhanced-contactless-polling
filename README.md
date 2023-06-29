@@ -184,13 +184,13 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
     [Config]  [Type]  [Subtype]  [Data (n)]
   ```
   - Configuration byte has a following binary format:  
-  ```
-        1        X        0 0      X X X X
-    [Unknown]  [Auth]  [Unknown]  [Length ]  
-  ```  
-    * Auth: 0b1 if authentication not required, 0b0 otherwise.  
+    ```
+          1        X        0 0      X X X X
+      [Unknown]  [Auth]  [Unknown]  [Length ]  
+    ```
+    - Auth: 0b1 if authentication not required, 0b0 otherwise.  
       If auth is required pass will be presented on a screen for manual authentication when brought near to the field.
-    * Length: defines a length of extra data.
+    - Length: defines a length of extra data.
   - Type contains terminal type:
     - 0x01: Transit;
     - 0x02: Access;
@@ -198,16 +198,16 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
     - 0x05: AirDrop.
   - Subtype depends on type. In most cases it has a value of 0x00;
   - Data. Its content and availability depend on terminal type and subtype:
-  ```
-    XX XX XX...        XX..
-    [TCIs (n)]   [Extra data (n)]
-  ``` 
-  - TCIs defines an array of 3 byte long indentifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype, but in practice exactly one is used always;
-  - Extra data contents depend on terminal type, subtype, and TCIs:
-    * For access/key readers it may contain a 8 byte long unique reader group identifier, which allows to differentiate between them for passes of the same type;
-    * For HomeKit it contains pairing information;
-    * For NameDrop it carries a 6 byte long BLE MAC address;
-    * For AirDrop it carries a 6 byte long zeroed out value.
+    ```
+      XX XX XX...        XX..
+      [TCIs (n)]   [Extra data (n)]
+    ``` 
+    - TCIs defines an array of 3 byte long indentifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype, but in practice exactly one is used always;
+    - Extra data contents depend on terminal type, subtype, and TCIs:
+      * For access/key readers it may contain a 8 byte long unique reader group identifier, which allows to differentiate between them for passes of the same type;
+      * For HomeKit it contains pairing information;
+      * For NameDrop it carries a 6 byte long BLE MAC address;
+      * For AirDrop it carries a 6 byte long zeroed out value.
 
 ### TCI
 
@@ -246,7 +246,7 @@ TCI format is arbitrary, although several patterns related to grouping of simila
     - [PN5180](https://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf) [(Archive)](https://web.archive.org/web/20221127182441/http://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf);
     - [ST25R3916](https://www.st.com/resource/en/datasheet/st25r3916.pdf) [(Archive)](https://web.archive.org/web/20230124020718/https://www.st.com/resource/en/datasheet/st25r3916.pdf).
 * Devices and software used for analysis:
-  - Proxmark3 Easy was used to sniff out ECP frames (No link, can be bought at AliExpress, DangerousThings), Proxmark3 RDV2/R can also be used;
+  - Proxmark3 Easy was used to sniff out ECP frames (No link, can be bought at AliExpress, DangerousThings), Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3.
   - PN532, PN5180, ST25R3916 - chips used to test homebrew ECP reader implementation.
 
