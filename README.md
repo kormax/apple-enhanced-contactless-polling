@@ -73,7 +73,8 @@ Other features use ECP as well:
 
 
 Reader side:
-* Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so. HALs/Libraries for most popular chips contain separate versions that inclue ECP support and are given to approved partners only, but homebrew solution is arbitrary to implement.  
+* Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
+HALs/Libraries for most popular chips contain separate confidential versions that inclue ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
   Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B) chips;
 * IOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
@@ -230,7 +231,7 @@ TCI format is arbitrary, although several patterns related to grouping of simila
 - CarKey: usually grouped by car manufacturer, consequent values signal readers on front/back doors,charging pad, etc. First byte is always 0x01. Can be seen in wallet configuration json hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
 
 
-**More information coming soon©.**
+**More information coming soon ©**
 
 
 ## Notes
@@ -253,7 +254,7 @@ TCI format is arbitrary, although several patterns related to grouping of simila
     - [ST25R3916](https://www.st.com/resource/en/datasheet/st25r3916.pdf) [(Archive)](https://web.archive.org/web/20230124020718/https://www.st.com/resource/en/datasheet/st25r3916.pdf).
 * Devices and software used for analysis:
   - Proxmark3 Easy was used to sniff out ECP frames (No link, can be bought at AliExpress, DangerousThings), Proxmark3 RDV2/4 can also be used;
-  - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3.
+  - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;
   - PN532, PN5180, ST25R3916 - chips used to test homebrew ECP reader implementation.
 
 
