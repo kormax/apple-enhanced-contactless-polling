@@ -200,7 +200,6 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
   - Subtype depends on type. In most cases it has a value of 0x00;
   - Data. Its content and availability depend on terminal type and subtype. Detailed description below.
 
-
 ### Data
 
 Data is a part of payload in V2, it contains TCIs and extra data:
@@ -209,7 +208,7 @@ Data is a part of payload in V2, it contains TCIs and extra data:
   XX XX XX...        XX..
   [TCIs (n)]   [Extra data (n)]
 ``` 
-- TCIs define an array of 3 byte long indentifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype, but in practice exactly one is used always;
+- TCIs define an array of 3 byte long indentifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype;
 - Extra data contents depend on terminal type, subtype, and TCIs:
   * For access/key readers it may contain a 8 byte long unique reader group identifier, which allows to differentiate between them for passes of the same type;
   * For HomeKit it contains pairing information;
@@ -231,13 +230,41 @@ TCI format is arbitrary, although several patterns related to grouping of simila
 - CarKey: usually grouped by car manufacturer, consequent values signal readers on front/back doors,charging pad, etc. First byte is always 0x01. Can be seen in wallet configuration json hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
 
 
-**More information coming soon ©**
+
+## ECP configuration examples
+
+Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
+
+| Name             | Version  | Type   | Subtype | TCI              | Data               | Description                                      |
+|------------------|----------|--------|---------|------------------|--------------------|--------------------------------------------------|
+| VAS or payment   | 01       | NA     | NA      | 00 00 00         | NA                 |                                                  |   
+| VAS and payment  | 01       | NA     | NA      | 00 00 01         | NA                 |                                                  |
+| VAS only         | 01       | NA     | NA      | 00 00 02         | NA                 |                                                  |
+| Payment only     | 01       | NA     | NA      | 00 00 03         | NA                 |                                                  |
+| Ignore           | 01       | NA     | NA      | cf 00 00         | NA                 |                                                  |
+| AirDrop          | 02       | 05     | 00      | 01 00 00         | 00 00 00 00 00 00  | Send only after device sees a NameDrop frame     |
+| NameDrop         | 02       | 05     | 00      | 01 00 01         | XX XX XX XX XX XX  | Data part contains MAC-address                   |
+
+
+## Sample ECP frames
+
+Examples contain fullframes with CRC calculated for ISO14443-A;
+
+- VAS or payment:  
+  `6a01000000f6f1`  
+  ```
+       6a         01      000000    f6f1
+    [Header]  [Version]   [TCI]   [CRC-A]
+  ```
+
+  Note that for frame to work 8-bit byte setting should be set in case of NFC-A.
+
 
 
 ## Notes
 
-- Although the document describes things in an imperative/declarative way, information was obtained in a experimental way without access to closed resources. Therefore some information might be wrong/misleading or only written as an assumption.
-- If you find any mistakes or have extra information, feel free to raise an issue or create a pull request.
+- This document is based on reverse-engineering efforts done without any access to the source material. Consider all information provided here as an educated guess that is not officially cofirmed.
+- If you find any mistakes/typos or have extra information to add, feel free to raise an issue or create a pull request.
 
 
 ## References
@@ -248,12 +275,13 @@ TCI format is arbitrary, although several patterns related to grouping of simila
   - Chip brochures (with ECP mentions):
     - [PN7150X](https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf) [(Archive)](https://web.archive.org/web/20210920054718/https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf);
     - [ST25](https://www.st.com/resource/en/product_presentation/st25_product_overview.pdf) [(Archive)](https://web.archive.org/web/20230109135439/https://www.st.com/content/ccc/resource/sales_and_marketing/presentation/product_presentation/group1/a9/5d/77/96/be/9a/48/7e/ST25_NFC_RFID_product_overview/files/ST25_product_overview.pdf/jcr:content/translations/en.ST25_product_overview.pdf).
+    - [SM-4XXX](https://www.legic.com/fileadmin/user_upload/Flyer_Broschueren/SM-4200_4500_flyer_en.pdf).
   - Chip datasheets:
     - [PN532](https://www.nxp.com/docs/en/nxp/data-sheets/PN532_C1.pdf) [(Archive)](https://web.archive.org/web/20230401225452/https://www.nxp.com/docs/en/nxp/data-sheets/PN532_C1.pdf);
     - [PN5180](https://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf) [(Archive)](https://web.archive.org/web/20221127182441/http://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf);
     - [ST25R3916](https://www.st.com/resource/en/datasheet/st25r3916.pdf) [(Archive)](https://web.archive.org/web/20230124020718/https://www.st.com/resource/en/datasheet/st25r3916.pdf).
 * Devices and software used for analysis:
-  - Proxmark3 Easy was used to sniff out ECP frames (No link, can be bought at AliExpress, DangerousThings), Proxmark3 RDV2/4 can also be used;
+  - Proxmark3 Easy - used to sniff ECP frames out. Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;
   - PN532, PN5180, ST25R3916 - chips used to test homebrew ECP reader implementation.
 
