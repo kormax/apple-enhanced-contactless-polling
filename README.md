@@ -5,7 +5,7 @@
  <img src="./assets/FLIPPER.ECP.DEMO.webp" alt="![ECP Transit Clipper with Flipper Zero]" width=250px>
 </p>
 
-
+# Overview
 
 Enhanced Contactless Polling/Protocol (ECP) is a proprietary extension to the ISO14443 (A/B) standard developed by Apple.   
 
@@ -22,7 +22,7 @@ This extension:
 - May serve as a form of NFC DRM, requiring reader manufacturers to pay licensing fees in order to be able to use this feature and provide better experience for Apple users.
 
 
-## Use cases
+# Use cases
 
 
 Express mode for most passes (apart from NFC-F and CATHAY) is implemented using ECP. That includes:
@@ -70,7 +70,7 @@ Other features use ECP as well:
   
 
 
-## Device support
+# Device support
 
 
 Reader side:
@@ -88,7 +88,7 @@ Device side:
 * Can be implemented on chips that allow reading raw frames in emulation mode even before selection.
 
 
-## Decision logic
+# Decision logic
 
 
 Upon entering a loop, device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies does the field poll for, allowing it to make a fully informed decision on what applet to select later.
@@ -155,9 +155,9 @@ Although not possible during normal operation, if a reader is polling for multip
 (NOTE) In IOS17 new AirDrop frame does not follow the beforementioned rules, as device reacts to it on first iteration in all cases.
 
 
-## Structure
+# Structure
 
-### Frame format
+## Frame format
 
 Each ECP frame consists of a header, version, payload and CRC:
 
@@ -170,7 +170,7 @@ Each ECP frame consists of a header, version, payload and CRC:
 - Payload: Version-dependant;
 - CRC (Calculated via ISO14443A/B algorithm, according to the modulation used).
 
-### Payload
+## Payload
 
 For V1 payload consists only of a single TCI:  
   ```
@@ -201,7 +201,7 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
   - Subtype depends on type. In most cases it has a value of 0x00;
   - Data. Its content and availability depend on terminal type and subtype. Detailed description below.
 
-### Data
+## Data
 
 Data is a part of payload in V2, it contains TCIs and extra data:
 
@@ -216,7 +216,7 @@ Data is a part of payload in V2, it contains TCIs and extra data:
   * For NameDrop it carries a 6 byte long BLE MAC address;
   * For AirDrop it carries a 6 byte long zeroed out value.
 
-### TCI
+## TCI
 
 TCI, also referred to as Terminal Capabilities Identifier, is an arbitrary three-byte-long value that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
 
@@ -232,7 +232,7 @@ TCI format is arbitrary, although several patterns related to grouping of simila
 
 
 
-## Configuration examples
+# Configuration examples
 
 Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
@@ -247,7 +247,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | NameDrop         | 02       | 05     | 00      | 01 00 01         | XX XX XX XX XX XX  | Data part contains MAC-address                   |
 
 
-## Full frame examples
+# Full frame examples
 
 Examples contain full frames with CRC calculated for ISO14443-A;
 
@@ -262,13 +262,13 @@ Note that for examples to work 8-bit byte setting should be set in case of NFC-A
 
 
 
-## Notes
+# Notes
 
 - This document is based on reverse-engineering efforts done without any access to original documentation. Consider all information provided here as an educated guess that is not officially cofirmed.
 - If you find any mistakes/typos or have extra information to add, feel free to raise an issue or create a pull request.
 
 
-## References
+# References
 
 * Resources that helped with research:
   - [IOS16 Runtime Headers](https://developer.limneos.net/?ios=16.3);
