@@ -1,19 +1,22 @@
 # Apple Enhanced Contactless Polling (ECP)
 
+
 <p float="left">
  <img src="./assets/PN532.ECP.DEMO.webp" alt="![ECP Access Home with PN532]" width=250px>
  <img src="./assets/FLIPPER.ECP.DEMO.webp" alt="![ECP Transit Clipper with Flipper Zero]" width=250px>
 </p>
 
+
 # Overview
 
-Enhanced Contactless Polling/Protocol (ECP) is a proprietary extension to the ISO14443 (A/B) standard developed by Apple.   
+
+Enhanced Contactless Polling/Protocol (ECP) is a proprietary extension to the ISO/IEC 14443 (A/B) standard developed by Apple.  
 
 It defines a custom data frame that a reader transmits during the polling sequence, giving an end device contextual info about the reader field, allowing it to select an appropriate applet even before any communication starts.  
 
 This extension:
 - Helps to make sure that end device will only start communication with the reader if it has something useful to do with it, avoiding error beeps and card clashing;
-- Increases privacy and security as it complicates scanning for all available passes on the device in one tap.
+- Increases privacy and security as it complicates brute force scanning for available passes on the device in a single tap.
 - Allows automatic usage of non ISO7816-compliant passes:
   * DESFire in native mode and on card-level instead of app-level;
   * Passes without application id: Mifare Plus, Ultralight, Classic etc.
@@ -39,7 +42,7 @@ Express mode for most passes (apart from NFC-F and CATHAY) is implemented using 
   - Home.
 
 Other features use ECP as well:
-- Value Added Services (VAS):  
+- Value Added Services ([VAS](https://github.com/kormax/apple-vas)):  
   Allows reader to select the VAS applet and try to get pass in advance (although failing to do so), causing pass to appear on a screen for authentication or under a payment card if one is selected.  
   <img src="./assets/VASONLY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
   <img src="./assets/VASANDPAY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
@@ -68,7 +71,6 @@ Other features use ECP as well:
 - HomeKit:  
   Allows appliances with an NFC reader that lack card emulation mode to convey pairing info and bring up a pairing prompt when a user device is brought near to it. 
   
-
 
 # Device support
 
@@ -231,20 +233,19 @@ TCI format is arbitrary, although several patterns related to grouping of simila
 - CarKey: usually grouped by car manufacturer, consequent values signal readers on front/back doors,charging pad, etc. First byte is always 0x01. Can be seen in wallet configuration json hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
 
 
-
 # Configuration examples
 
 Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
-| Name             | Version  | Type   | Subtype | TCI              | Data               | Description                                      |
-|------------------|----------|--------|---------|------------------|--------------------|--------------------------------------------------|
-| VAS or payment   | 01       | NA     | NA      | 00 00 00         | NA                 |                                                  |   
-| VAS and payment  | 01       | NA     | NA      | 00 00 01         | NA                 |                                                  |
-| VAS only         | 01       | NA     | NA      | 00 00 02         | NA                 |                                                  |
-| Payment only     | 01       | NA     | NA      | 00 00 03         | NA                 |                                                  |
-| Ignore           | 01       | NA     | NA      | cf 00 00         | NA                 |                                                  |
-| AirDrop          | 02       | 05     | 00      | 01 00 00         | 00 00 00 00 00 00  | Sent only after device sees a NameDrop frame     |
-| NameDrop         | 02       | 05     | 00      | 01 00 01         | XX XX XX XX XX XX  | Data part contains MAC-address                   |
+| Name            | Version | Type | Subtype | TCI      | Data              | Description                                  |
+| --------------- | ------- | ---- | ------- | -------- | ----------------- | -------------------------------------------- |
+| VAS or payment  | 01      | NA   | NA      | 00 00 00 | NA                |                                              |
+| VAS and payment | 01      | NA   | NA      | 00 00 01 | NA                |                                              |
+| VAS only        | 01      | NA   | NA      | 00 00 02 | NA                |                                              |
+| Payment only    | 01      | NA   | NA      | 00 00 03 | NA                |                                              |
+| Ignore          | 01      | NA   | NA      | cf 00 00 | NA                |                                              |
+| AirDrop         | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00 | Sent only after device sees a NameDrop frame |
+| NameDrop        | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX | Data part contains MAC-address               |
 
 
 # Full frame examples
@@ -261,7 +262,6 @@ Examples contain full frames with CRC calculated for ISO14443-A;
 Note that for examples to work 8-bit byte setting should be set in case of NFC-A.
 
 
-
 # Notes
 
 - This document is based on reverse-engineering efforts done without any access to original documentation. Consider all information provided here as an educated guess that is not officially cofirmed.
@@ -271,12 +271,17 @@ Note that for examples to work 8-bit byte setting should be set in case of NFC-A
 # References
 
 * Resources that helped with research:
-  - [IOS16 Runtime Headers](https://developer.limneos.net/?ios=16.3);
-  - [Apple Developer Documentation](https://developer.apple.com/documentation/);
-  - [Apple Wallet configuration json](https://smp-device-content.apple.com/static/region/v2/config.json);
-  - [Apple mention of ECP as Enhanced Contactless Protocol](https://developer.apple.com/videos/play/wwdc2020/10006/?time=1023);
-  - [NXP mention that ECP HALs or docs are only given to licensed partners](https://community.nxp.com/t5/NFC/Do-CLRC66302HN-and-CLRC66303HN-support-Apple-s-ECP-Enhanced/m-p/1445260#M9362);
-  - [ST mention that ECP docs can be provided only after certification](https://community.st.com/t5/st25-nfc-rfid-tags-and-readers/st25r3917b-technical-support-apple-ecp-guide/td-p/81953);
+  - Code analysis:
+    - [IOS16 Runtime Headers](https://developer.limneos.net/?ios=16.3);
+  - Apple resources:
+    - [Apple Developer Documentation](https://developer.apple.com/documentation/);
+    - [Apple Wallet configuration json](https://smp-device-content.apple.com/static/region/v2/config.json);
+    - [Apple mention of ECP as Enhanced Contactless Protocol](https://developer.apple.com/videos/play/wwdc2020/10006/?time=1023);
+  - Forums:
+    - [NXP mention that ECP HALs or docs are only given to licensed partners](https://community.nxp.com/t5/NFC/Do-CLRC66302HN-and-CLRC66303HN-support-Apple-s-ECP-Enhanced/m-p/1445260#M9362);
+    - [ST mention that ECP docs can be provided only after certification](https://community.st.com/t5/st25-nfc-rfid-tags-and-readers/st25r3917b-technical-support-apple-ecp-guide/td-p/81953);
+  - Device operation manuals:
+    - [HID mention of TCI for reader configuration](https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf) [(Archive)](https://web.archive.org/web/20230630195103/https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf);
   - Chip brochures (with ECP mentions):
     - [PN7150X](https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf) [(Archive)](https://web.archive.org/web/20210920054718/https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf);
     - [ST25](https://www.st.com/resource/en/product_presentation/st25_product_overview.pdf) [(Archive)](https://web.archive.org/web/20230109135439/https://www.st.com/content/ccc/resource/sales_and_marketing/presentation/product_presentation/group1/a9/5d/77/96/be/9a/48/7e/ST25_NFC_RFID_product_overview/files/ST25_product_overview.pdf/jcr:content/translations/en.ST25_product_overview.pdf).
