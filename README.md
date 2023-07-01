@@ -244,7 +244,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | VAS only        | 01      | NA   | NA      | 00 00 02 | NA                |                                                     |
 | Payment only    | 01      | NA   | NA      | 00 00 03 | NA                |                                                     |
 | Ignore          | 01      | NA   | NA      | cf 00 00 | NA                |                                                     |
-| Identity        | 02      | 03   | 00      | NA/00    | NA/00             | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and it is data? |
+| Identity        | 02      | 03   | 00      | NA/00    | NA/00             | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
 | AirDrop         | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00 | Sent only after device sees a NameDrop frame        |
 | NameDrop        | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX | Data part contains MAC-address                      |
 
@@ -267,7 +267,7 @@ Examples contain full frames with CRC calculated for ISO14443-A;
     [Header]  [Version]   [TCI]   [CRC-A]
   ```
 
-- AirDrop:  
+- NameDrop:  
   `6a02890500010001deadbeef6969a390`
   ```
        6a         02        89       05      00      010001  deadbeef6969  a390
