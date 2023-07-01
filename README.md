@@ -237,15 +237,16 @@ TCI format is arbitrary, although several patterns related to grouping of simila
 
 Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
-| Name            | Version | Type | Subtype | TCI      | Data              | Description                                  |
-| --------------- | ------- | ---- | ------- | -------- | ----------------- | -------------------------------------------- |
-| VAS or payment  | 01      | NA   | NA      | 00 00 00 | NA                |                                              |
-| VAS and payment | 01      | NA   | NA      | 00 00 01 | NA                |                                              |
-| VAS only        | 01      | NA   | NA      | 00 00 02 | NA                |                                              |
-| Payment only    | 01      | NA   | NA      | 00 00 03 | NA                |                                              |
-| Ignore          | 01      | NA   | NA      | cf 00 00 | NA                |                                              |
-| AirDrop         | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00 | Sent only after device sees a NameDrop frame |
-| NameDrop        | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX | Data part contains MAC-address               |
+| Name            | Version | Type | Subtype | TCI      | Data              | Description                                         |
+| --------------- | ------- | ---- | ------- | -------- | ----------------- | --------------------------------------------------- |
+| VAS or payment  | 01      | NA   | NA      | 00 00 00 | NA                |                                                     |
+| VAS and payment | 01      | NA   | NA      | 00 00 01 | NA                |                                                     |
+| VAS only        | 01      | NA   | NA      | 00 00 02 | NA                |                                                     |
+| Payment only    | 01      | NA   | NA      | 00 00 03 | NA                |                                                     |
+| Ignore          | 01      | NA   | NA      | cf 00 00 | NA                |                                                     |
+| Identity        | 02      | 03   | 00      | NA/00    | NA/00             | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and it is data? |
+| AirDrop         | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00 | Sent only after device sees a NameDrop frame        |
+| NameDrop        | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX | Data part contains MAC-address                      |
 
 
 # Full frame examples
@@ -255,11 +256,65 @@ Examples contain full frames with CRC calculated for ISO14443-A;
 - VAS or payment:  
   `6a01000000f6f1`  
   ```
-       6a         01      000000    f6f1
+       6a         01      000000   f6f1
     [Header]  [Version]   [TCI]   [CRC-A]
   ```
 
+- Ignore  
+  `6a01cf0000abb1`  
+  ```
+       6a         01      cf0000   abb1
+    [Header]  [Version]   [TCI]   [CRC-A]
+  ```
+
+- AirDrop:  
+  `6a02890500010001deadbeef6969a390`
+  ```
+       6a         02        89       05      00      010001  deadbeef6969  a390
+    [Header]  [Version]  [Config]  [Type] [Subtype]  [TCI]     [Data]     [CRC-A]
+
+    1000        1001
+    [NA]  [Payload length]
+  ```
+
 Note that for examples to work 8-bit byte setting should be set in case of NFC-A.
+
+
+# Contributing
+
+Best way to help is to provide more samples of ECP frames and TCIs.  
+Especially interesting (missing) are the following:
+- TCIs of transit agencies that use EMV only:
+  - France:
+    - Dreux;
+    - Lyon;
+    - Montargis;
+    - Nevers;
+    - Tarbes-Lourdes.
+  - Estonia:
+    - Tartu.
+  - Finland:
+    - Turku.
+  - Sweeden:
+    - Malmo.
+- Access readers (There might be many unknown variations, so any samples would be welcome):
+  - University;
+  - Office;
+  - Venues;
+  - Hotels.
+- HomeKit pairing;
+- Identity (Real device).
+
+One way to get this information is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to RFID tools app running on an Android phone. 
+A couple of tidbits encountered:
+- First time using the app I've encountered an issue connecting to Proxmark3 directly, to fix it I had to install a serial to network app and connect to the device this way in a console. Currently everything seems to be working fine without that fix but keep it in mind.
+- Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
+
+The command needed to collect traces is `hf 14a sniff`, after activating the command hold the Proxmark near a reader for a couple of seconds. In some cases it is needed to tap/touch the reader in order to wake it up as it might not poll to save energy.
+
+After that, press a button on a device, traces will be downloaded and can be viewed with a `hf 14a list` command. You'll know which ones are the ones.  
+
+Some other devices might also be able to sniff the frames, but due to a lack of personal experience I cannot recommend any.
 
 
 # Notes
@@ -293,4 +348,5 @@ Note that for examples to work 8-bit byte setting should be set in case of NFC-A
 * Devices and software used for analysis:
   - Proxmark3 Easy - used to sniff ECP frames out. Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;
+  - [RFID Tools app](https://play.google.com/store/apps/details?id=com.rfidresearchgroup.rfidtools) - app used to control Proxmark from an Android device while in field;
   - PN532, PN5180, ST25R3916 - chips used to test homebrew ECP reader implementation.
