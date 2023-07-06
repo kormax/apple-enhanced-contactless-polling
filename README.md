@@ -77,7 +77,7 @@ Other features use ECP as well:
 
 Reader side:
 * Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
-HALs/Libraries for most popular chips contain separate confidential versions that inclue ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
+HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
   Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B) chips;
 * IOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
@@ -225,13 +225,13 @@ Data is a part of payload in V2, it contains TCIs and extra data:
 TCI, also referred to as Terminal Capabilities Identifier, is an arbitrary three-byte-long value that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
 
 The following restrictions apply to the use of TCI:
-- Some TCIs are bound to a reader with particular type and subtype (which requires V2), while others trigger for all types (support V1). It is not known if this behavior is a bug or was intentional.  
+- Some TCIs are bound to a reader with particular type and subtype (which requires V2), while others trigger for all types (support V1). It is not known if this behavior is a bug or was intentional;
 - TCIs intended for V1 cannot be used with V2.
 
 TCI format is arbitrary, although several patterns related to grouping of similar functionality can be established:
-- VAS: grouped with the last byte having a value of 0x00, 0x01, 0x02, 0x03 depending on mode.
-- Access (Car/Home/University/Office/Venue): First byte is static, other two link to a particular pass provider.
-- Transit: First byte is static, other two link to a particular transit agency (and their pass).
+- VAS: grouped with the last byte having a value of 0x00, 0x01, 0x02, 0x03 depending on mode;
+- Access (Car/Home/University/Office/Venue): First byte is static, other two link to a particular pass provider;
+- Transit: First byte is static, other two link to a particular transit agency (and their pass);
 - CarKey: usually grouped by car manufacturer, consequent values signal readers on front/back doors,charging pad, etc. First byte is always 0x01. Can be seen in wallet configuration json hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
 
 
@@ -311,7 +311,7 @@ Especially interesting (missing) are the following:
 
 One way to get this information is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone. 
 A couple of tidbits encountered:
-- First time using the app I've encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux. 
+- First time using the app I've encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux;
 - Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
 
 More info on installing and running Proxmark client on your Android device [here](https://github.com/RfidResearchGroup/proxmark3/blob/master/doc/termux_notes.md).
