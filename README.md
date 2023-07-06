@@ -305,10 +305,12 @@ Especially interesting (missing) are the following:
 - HomeKit pairing;
 - Identity (Real device).
 
-One way to get this information is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to RFID tools app running on an Android phone. 
+One way to get this information is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone. 
 A couple of tidbits encountered:
-- First time using the app I've encountered an issue connecting to Proxmark3 directly, to fix it I had to install a serial to network app and connect to the device this way in a console. Currently everything seems to be working fine without that fix but keep it in mind.
+- First time using the app I've encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux. 
 - Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
+
+More info on installing and running Proxmark client on your Android device [here](https://github.com/RfidResearchGroup/proxmark3/blob/master/doc/termux_notes.md).
 
 The command needed to collect traces is `hf 14a sniff`, after activating the command hold the Proxmark near a reader for a couple of seconds. In some cases it is needed to tap/touch the reader in order to wake it up as it might not poll to save energy.
 
@@ -348,5 +350,7 @@ Some other devices might also be able to sniff the frames, but due to a lack of 
 * Devices and software used for analysis:
   - Proxmark3 Easy - used to sniff ECP frames out. Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;
-  - [RFID Tools app](https://play.google.com/store/apps/details?id=com.rfidresearchgroup.rfidtools) - app used to control Proxmark from an Android device while in field;
+  - [RFID Tools app](https://play.google.com/store/apps/details?id=com.rfidresearchgroup.rfidtools) - app that can used to control OFW Proxmark RDV4 from an Android device while in field;
+  - [Termux](https://github.com/termux/termux-app) - can be used to run Iceman Fork Proxmark client in field;
+  - [TCPUART transparent Bridge](https://play.google.com/store/apps/details?id=com.hardcodedjoy.tcpuart) - used to connect Proxmark to a client running in Termux;
   - PN532, PN5180, ST25R3916 - chips used to test homebrew ECP reader implementation.
