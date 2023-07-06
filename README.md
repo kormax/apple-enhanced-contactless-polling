@@ -140,6 +140,8 @@ A -> ECP_A -> (ENTRY) -> B -> ECP_B -> F -> A -> ECP_A -> (DECISION) -> B -> (RE
 (ENTRY) -> A -> ECP_A -> F -> A -> ECP_A -> F -> (DECISION) -> A -> (RESPONSE)
 ```
 
+<sub>Characters A, B, and F were used in examples as a shorthand for full polling frame names: WUPA, WUPB, SENSF_REQ respectively. ECP frame has different values depending on a use case _A/B suffix refers to modulation used. </sub>
+
 In conclusion, it seems that if reader is polling for:
 * 1 technology, decision is made after third poll, response is given on the fourth;
 * 2 technologies, decision is made after the second polling loop, while the response is given on the third.
@@ -242,11 +244,11 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | VAS or payment  | 01      | NA   | NA      | 00 00 00 | NA                |                                                     |
 | VAS and payment | 01      | NA   | NA      | 00 00 01 | NA                |                                                     |
 | VAS only        | 01      | NA   | NA      | 00 00 02 | NA                |                                                     |
-| Payment only    | 01      | NA   | NA      | 00 00 03 | NA                |                                                     |
+| Payment only    | 01      | NA   | NA      | 00 00 03 | NA                | Serves as anti-CATHAY                               |
 | Ignore          | 01      | NA   | NA      | cf 00 00 | NA                |                                                     |
 | Identity        | 02      | 03   | 00      | NA/00    | NA/00             | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
 | AirDrop         | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00 | Sent only after device sees a NameDrop frame        |
-| NameDrop        | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX | Data part contains MAC-address                      |
+| NameDrop        | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX | Data part contains a BLE MAC-address                |
 
 
 # Full frame examples
@@ -304,6 +306,8 @@ Especially interesting (missing) are the following:
   - Hotels.
 - HomeKit pairing;
 - Identity (Real device).
+
+<sub>Frames missing from the example table but not mentioned above were collected but not yet analyzed and publicized.</sub>
 
 One way to get this information is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone. 
 A couple of tidbits encountered:
