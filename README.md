@@ -238,17 +238,29 @@ TCI format is arbitrary, although several patterns related to grouping of simila
 # Configuration examples
 
 Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
+<sub> NA - not applicable; XX - any; ?? - unknown </sub>
 
-| Name            | Version | Type | Subtype | TCI      | Data              | Description                                         |
-| --------------- | ------- | ---- | ------- | -------- | ----------------- | --------------------------------------------------- |
-| VAS or payment  | 01      | NA   | NA      | 00 00 00 | NA                |                                                     |
-| VAS and payment | 01      | NA   | NA      | 00 00 01 | NA                |                                                     |
-| VAS only        | 01      | NA   | NA      | 00 00 02 | NA                |                                                     |
-| Payment only    | 01      | NA   | NA      | 00 00 03 | NA                | Serves as anti-CATHAY                               |
-| Ignore          | 01      | NA   | NA      | cf 00 00 | NA                |                                                     |
-| Identity        | 02      | 03   | 00      | NA/00    | NA/00             | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
-| AirDrop         | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00 | Sent only after device sees a NameDrop frame        |
-| NameDrop        | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX | Data part contains a BLE MAC-address                |
+| Name                          | Version | Type | Subtype | TCI      | Data                    | Description                                                                                                                                            |
+| ----------------------------- | ------- | ---- | ------- | -------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| VAS or payment                | 01      | NA   | NA      | 00 00 00 | NA                      |                                                                                                                                                        |
+| VAS and payment               | 01      | NA   | NA      | 00 00 01 | NA                      |                                                                                                                                                        |
+| VAS only                      | 01      | NA   | NA      | 00 00 02 | NA                      |                                                                                                                                                        |
+| Payment only                  | 01      | NA   | NA      | 00 00 03 | NA                      | Serves as anti-CATHAY                                                                                                                                  |
+| Ignore                        | 01      | NA   | NA      | cf 00 00 | NA                      |                                                                                                                                                        |
+| Transit                       | 02      | 01   | 00      | XX XX XX | XX XX XX XX XX          | TCI refers to a transit agency, Data is a mask of allowed EMV payment networks for fallback                                                            |
+| Transit: Ventra               | 02      | 01   | 00      | 03 00 00 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
+| Transit: HOP Fastpass         | 02      | 01   | 00      | 03 04 00 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
+| Transit: WMATA                | 02      | 01   | 00      | 03 00 01 | ?? ?? ?? ?? ??          | Will select a Smart Trip card                                                                                                                          |
+| Transit: TFL                  | 02      | 01   | 00      | 03 00 02 | 79 00 00 00 00          | Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                           |
+| Transit: LA Tap               | 02      | 01   | 00      | 03 00 05 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
+| Transit: Clipper              | 02      | 01   | 00      | 03 00 07 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
+| Access                        | 02      | 02   | XX      | XX XX XX | XX XX XX XX XX XX XX XX | TCI refers to a pass provider, Data is reader group identifier                                                                                         |
+| Access: Home Key              | 02      | 02   | 06      | 02 11 00 | XX XX XX XX XX XX XX XX | Having more than one key breaks usual ECP logic                                                                                                        |
+| Access: Car Pairing           | 02      | 02   | 09      | XX XX XX |                         | TCI refers to a combination of car manufacturer + reader position                                                                                      |
+| Access: Car Pairing: Mercedes | 02      | 02   | 09      | 01 02 01 |                         |                                                                              |
+| Identity                      | 02      | 03   | 00      | NA/00    | NA/00                   | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
+| AirDrop                       | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00       | Sent only after device sees a NameDrop frame                                                                                                           |
+| NameDrop                      | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX       | Data part contains a BLE MAC-address                                                                                                                   |
 
 
 # Full frame examples
@@ -277,6 +289,13 @@ Examples contain full frames with CRC calculated for ISO14443-A;
 
     1000        1001
     [NA]  [Payload length]
+  ```
+
+- Access: Car Pairing: Mercedes:  
+  `6a02c30209010201530b`
+  ```
+       6a         02        c3       02      09      010201   530b
+    [Header]  [Version]  [Config]  [Type] [Subtype]  [TCI]  [CRC-A]
   ```
 
 Note that for examples to work 8-bit byte setting should be set in case of NFC-A.
