@@ -238,6 +238,7 @@ TCI format is arbitrary, although several patterns related to grouping of simila
 # Configuration examples
 
 Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
+
 <sub> NA - not applicable; XX - any; ?? - unknown </sub>
 
 | Name                          | Version | Type | Subtype | TCI      | Data                    | Description                                                                                                                                            |
@@ -255,7 +256,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | Transit: LA Tap               | 02      | 01   | 00      | 03 00 05 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
 | Transit: Clipper              | 02      | 01   | 00      | 03 00 07 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
 | Access                        | 02      | 02   | XX      | XX XX XX | XX XX XX XX XX XX XX XX | TCI refers to a pass provider, Data is reader group identifier                                                                                         |
-| Access: Venue                 | 02      | 02   | 00      | XX XX XX | XX XX XX XX XX XX XX XX |                                                                                                        |
+| Access: Venue                 | 02      | 02   | 00      | XX XX XX | XX XX XX XX XX XX XX XX |                                                                                                                                                        |
 | Access: Home Key              | 02      | 02   | 06      | 02 11 00 | XX XX XX XX XX XX XX XX | Having more than one key breaks usual ECP logic                                                                                                        |
 | Access: Car Pairing           | 02      | 02   | 09      | XX XX XX | NA                      | TCI refers to a combination of car manufacturer + reader position                                                                                      |
 | Access: Car Pairing: Mercedes | 02      | 02   | 09      | 01 02 01 | NA                      |                                                                                                                                                        |
@@ -266,40 +267,42 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
 # Full frame examples
 
-Examples contain full frames with CRC calculated for ISO14443-A;
+Examples contain frames without CRC, which needs to be calculated according to the modulation used;
 
 - VAS or payment:  
-  `6a01000000f6f1`  
+  `6a01000000`  
   ```
-       6a         01      000000   f6f1
-    [Header]  [Version]   [TCI]   [CRC-A]
+       6a         01      000000 
+    [Header]  [Version]   [TCI]  
   ```
 
 - Ignore  
-  `6a01cf0000abb1`  
+  `6a01cf0000`  
   ```
-       6a         01      cf0000   abb1
-    [Header]  [Version]   [TCI]   [CRC-A]
+       6a         01      cf0000   
+    [Header]  [Version]   [TCI]  
   ```
 
 - NameDrop:  
-  `6a02890500010001deadbeef6969a390`
+  `6a02890500010001deadbeef6969`
   ```
-       6a         02        89       05      00      010001  deadbeef6969  a390
-    [Header]  [Version]  [Config]  [Type] [Subtype]  [TCI]     [Data]     [CRC-A]
+       6a         02        89       05      00      010001  deadbeef6969 
+    [Header]  [Version]  [Config]  [Type] [Subtype]  [TCI]     [Data]     
 
     1000        1001
     [NA]  [Payload length]
   ```
 
 - Access: Car Pairing: Mercedes:  
-  `6a02c30209010201530b`
+  `6a02c30209010201`
   ```
-       6a         02        c3       02      09      010201   530b
-    [Header]  [Version]  [Config]  [Type] [Subtype]  [TCI]  [CRC-A]
+       6a         02        c3       02      09      010201 
+    [Header]  [Version]  [Config]  [Type] [Subtype]  [TCI]  
   ```
 
-Note that for examples to work 8-bit byte setting should be set in case of NFC-A.
+Note that for examples to work 8-bit byte setting should be set in case of NFC-A, 2-byte CRC has to be appended beforehand.
+
+If you have a Proxmark3, you can test those frames using commands `hf 14a raw -akc` for NFC-A and `hf 14b raw -kc -d` for NFC-B. After sending the frame try polling the device using the `hf 14a reader -sk` or `hf 14b reader` command.
 
 
 # Contributing
