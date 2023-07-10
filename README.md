@@ -39,7 +39,7 @@ Express mode for most passes (apart from NFC-F and CATHAY) is implemented using 
   - Hotel.
 - Keys:
   - Car;
-  - Home.
+  - [Home](https://github.com/kormax/apple-home-key).
 
 Other features use ECP as well:
 - Value Added Services ([VAS](https://github.com/kormax/apple-vas)):  
@@ -47,7 +47,7 @@ Other features use ECP as well:
   <img src="./assets/VASONLY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
   <img src="./assets/VASANDPAY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
   <img src="./assets/VASANDPAY.AFTER.DEMO.webp" alt="![Image showing VAS]" width=200px>
-- GymKit:  
+- [GymKit](https://github.com/kormax/apple-gymkit):  
   Makes apple watch act as an NDEF tag for BLE handover in order to connect to supported gym equipment.  
   <img src="./assets/GYMKIT.DEMO.webp" alt="![Image showing GymKit setup]" width=200px>
 - Identity:  
