@@ -252,7 +252,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | Transit: Ventra               | 02      | 01   | 00      | 03 00 00 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
 | Transit: HOP Fastpass         | 02      | 01   | 00      | 03 04 00 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
 | Transit: WMATA                | 02      | 01   | 00      | 03 00 01 | ?? ?? ?? ?? ??          | Will select a Smart Trip card                                                                                                                          |
-| Transit: TFL                  | 02      | 01   | 00      | 03 00 02 | 79 00 00 00 00          | Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                           |
+| Transit: TFL                  | 02      | 01   | 00      | 03 00 02 | 79 00 00 00 00          | Discovered by "Payment Village" and Proxmark community. Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                           |
 | Transit: LA Tap               | 02      | 01   | 00      | 03 00 05 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
 | Transit: Clipper              | 02      | 01   | 00      | 03 00 07 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
 | Access                        | 02      | 02   | XX      | XX XX XX | XX XX XX XX XX XX XX XX | TCI refers to a pass provider, Data is reader group identifier                                                                                         |
@@ -350,6 +350,7 @@ Some other devices might also be able to sniff the frames, but due to a lack of 
 
 - This document is based on reverse-engineering efforts done without any access to original documentation. Consider all information provided here as an educated guess that is not officially cofirmed.
 - If you find any mistakes/typos or have extra information to add, feel free to raise an issue or create a pull request.
+- Refer to resources directory to access json database of ECP frames. This info will also be pushed to Proxmark3 repository from time to time.
 
 
 # References
