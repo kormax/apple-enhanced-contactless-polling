@@ -307,6 +307,8 @@ If you have a Proxmark3, you can test those frames using commands `hf 14a raw -a
 
 # Contributing
 
+## Missing pieces
+
 Best way to help is to provide more samples of ECP frames and TCIs.  
 Especially interesting (missing) are the following:
 - TCIs of transit agencies that use EMV only:
@@ -332,6 +334,10 @@ Especially interesting (missing) are the following:
 
 <sub>Frames missing from the example table but not mentioned above were collected but not yet analyzed and publicized.</sub>
 
+## Collecting information
+
+### Sniffing
+
 One way to get this information is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone. 
 A couple of tidbits encountered:
 - First time using the app I've encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux;
@@ -344,6 +350,45 @@ The command needed to collect traces is `hf 14a sniff`, after activating the com
 After that, press a button on a device, traces will be downloaded and can be viewed with a `hf 14a list` command. You'll know which ones are the ones.  
 
 Some other devices might also be able to sniff the frames, but due to a lack of personal experience I cannot recommend any.
+
+### Analysing pass files
+
+The second way of retreiving useful information could be pkpass file analysis.
+There are two known ways of getting those files:  
+1. Jailbreaking your iPhone and looking into wallet app data;
+2. Adding a card to a Mac, and accessing its info from the wallet directory:
+   1. Go to "~/Library/Passes/Cards/" directory.
+   2. Click on any .pkpass, select "Show Package Contents"
+   3. Open the "pass.json" file.
+   4. Inside the file, search for keywords `tci`, `openloop`, `ecp`, `transit`, `automatic`, `selection`, `express`, as in example:
+      ```
+      {
+        "formatVersion":1,
+        "passTypeIdentifier":"paymentpass.com.apple",
+        "teamIdentifier":"Apple Inc.",
+        "paymentApplications":[
+          {
+              "secureElementIdentifier":"133713371337",
+              "applicationIdentifier":"69696969696969696969",
+              "applicationDescription":"Mastercard",
+              "defaultPaymentApplication":true,
+              "supportsOptionalAuthentication":1,
+              "automaticSelectionCriteria":[
+                  {
+                      "type":"ecp.2.open_loop",
+                      "supportsExpress":true,
+                      "openLoopExpressMask":"0800000000"
+                  }
+              ],
+              "supportedTransitNetworkIdentifiers":[],
+          }
+        ]
+      }
+      ```  
+      <sub>Other fields removed to reduce space taken</sub>  
+      Here we see that a Mastercard has automatic selection creteria `0800000000` which corresponds to `00001000` in binary for the first byte of transit data mask.  
+      Other cards can be analysed the same way.
+       
 
 
 # Notes
