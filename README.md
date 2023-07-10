@@ -334,11 +334,21 @@ Especially interesting (missing) are the following:
 
 <sub>Frames missing from the example table but not mentioned above were collected but not yet analyzed and publicized.</sub>
 
+Also some unanswered questions remain, which require further analysis and testing, such as:
+- If more than one TCI can be sent by a reader;
+- If TCI has format, at least in some situations;
+- If a TCI is 3 bytes long, or it could have a variable length (such as for transit), this question arose after seeing an "Identity" frame;
+- If data part is actually considered a second TCI;
+- If terminal subtype has some special encoding rules;
+- What the unknown configuration byte bits are responsible for.
+
+If you have any findings or thoughts on this manner, feel free to discuss them in issues section.
+
 ## Collecting information
 
 ### Sniffing
 
-One way to get this information is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone. 
+One way to collect information about ECP is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone. 
 A couple of tidbits encountered:
 - First time using the app I've encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux;
 - Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
