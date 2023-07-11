@@ -241,29 +241,33 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
 <sub> NA - not applicable; XX - any; ?? - unknown </sub>
 
-| Name                          | Version | Type | Subtype | TCI      | Data                    | Description                                                                                                                                            |
-| ----------------------------- | ------- | ---- | ------- | -------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| VAS or payment                | 01      | NA   | NA      | 00 00 00 | NA                      |                                                                                                                                                        |
-| VAS and payment               | 01      | NA   | NA      | 00 00 01 | NA                      |                                                                                                                                                        |
-| VAS only                      | 01      | NA   | NA      | 00 00 02 | NA                      |                                                                                                                                                        |
-| Payment only                  | 01      | NA   | NA      | 00 00 03 | NA                      | Serves as anti-CATHAY                                                                                                                                  |
-| Ignore                        | 01      | NA   | NA      | cf 00 00 | NA                      |                                                                                                                                                        |
-| Transit                       | 02      | 01   | 00      | XX XX XX | XX XX XX XX XX          | TCI refers to a transit agency, Data is a mask of allowed EMV payment networks for fallback                                                            |
-| Transit: Ventra               | 02      | 01   | 00      | 03 00 00 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
-| Transit: HOP Fastpass         | 02      | 01   | 00      | 03 04 00 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
-| Transit: WMATA                | 02      | 01   | 00      | 03 00 01 | ?? ?? ?? ?? ??          | Will select a Smart Trip card                                                                                                                          |
-| Transit: TFL                  | 02      | 01   | 00      | 03 00 02 | 79 00 00 00 00          | Discovered by "Payment Village" and Proxmark community. Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                           |
-| Transit: LA Tap               | 02      | 01   | 00      | 03 00 05 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
-| Transit: Clipper              | 02      | 01   | 00      | 03 00 07 | ?? ?? ?? ?? ??          |                                                                                                                                                        |
-| Access                        | 02      | 02   | XX      | XX XX XX | XX XX XX XX XX XX XX XX | TCI refers to a pass provider, Data is reader group identifier                                                                                         |
-| Access: Venue                 | 02      | 02   | 00      | XX XX XX | XX XX XX XX XX XX XX XX |                                                                                                                                                        |
-| Access: Home Key              | 02      | 02   | 06      | 02 11 00 | XX XX XX XX XX XX XX XX | Having more than one key breaks usual ECP logic                                                                                                        |
-| Access: Car Pairing           | 02      | 02   | 09      | XX XX XX | NA                      | TCI refers to a combination of car manufacturer + reader position                                                                                      |
-| Access: Car Pairing: Mercedes | 02      | 02   | 09      | 01 02 01 | NA                      |                                                                                                                                                        |
-| Identity                      | 02      | 03   | 00      | NA/00    | NA/00                   | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
-| AirDrop                       | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00       | Sent only after device sees a NameDrop frame                                                                                                           |
-| NameDrop                      | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX       | Data part contains a BLE MAC-address                                                                                                                   |
 
+| Name                          | Version | Type | Subtype | TCI      | Data                    | Source                                       | Description                                                                                                                                            |
+| ----------------------------- | ------- | ---- | ------- | -------- | ----------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| VAS or payment                | 01      | NA   | NA      | 00 00 00 | NA                      | Sniffing                                     |                                                                                                                                                        |
+| VAS and payment               | 01      | NA   | NA      | 00 00 01 | NA                      | Bruteforce                                   |                                                                                                                                                        |
+| VAS only                      | 01      | NA   | NA      | 00 00 02 | NA                      | Bruteforce                                   |                                                                                                                                                        |
+| Payment only                  | 01      | NA   | NA      | 00 00 03 | NA                      | Bruteforce                                   | Serves as anti-CATHAY                                                                                                                                  |
+| GymKit                        | 01      | NA   | NA      | c3 00 00 | NA                      | Bruteforce                                   | The only way of triggering GymKit on an apple watch. There are other frames that trigger GymKit too, but they also trigger express transit for iPhones |
+| Ignore                        | 01      | NA   | NA      | cf 00 00 | NA                      | Sniffing                                     |                                                                                                                                                        |
+| Transit                       | 02      | 01   | 00      | XX XX XX | XX XX XX XX XX          | Derived via bruteforce based on TFL example  | TCI refers to a transit agency, Data is a mask of allowed EMV payment networks for fallback                                                            |
+| Transit: Ventra               | 02      | 01   | 00      | 03 00 00 | ?? ?? ?? ?? ??          | Bruteforce                                   |                                                                                                                                                        |
+| Transit: HOP Fastpass         | 02      | 01   | 00      | 03 04 00 | ?? ?? ?? ?? ??          | Bruteforce                                   |                                                                                                                                                        |
+| Transit: WMATA                | 02      | 01   | 00      | 03 00 01 | ?? ?? ?? ?? ??          | Bruteforce                                   | Will select a Smart Trip card                                                                                                                          |
+| Transit: TFL                  | 02      | 01   | 00      | 03 00 02 | 79 00 00 00 00          | Sniffing: Payment Village/Proxmark community | Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                           |
+| Transit: LA Tap               | 02      | 01   | 00      | 03 00 05 | ?? ?? ?? ?? ??          | Bruteforce                                   |                                                                                                                                                        |
+| Transit: Clipper              | 02      | 01   | 00      | 03 00 07 | ?? ?? ?? ?? ??          | Bruteforce                                   |                                                                                                                                                        |
+| Access                        | 02      | 02   | XX      | XX XX XX | XX XX XX XX XX XX XX XX | Assumption based on other data               | TCI refers to a pass provider, Data is reader group identifier                                                                                         |
+| Access: Venue                 | 02      | 02   | 00      | XX XX XX | XX XX XX XX XX XX XX XX | HID Reader configuration manual              |                                                                                                                                                        |
+| Access: Home Key              | 02      | 02   | 06      | 02 11 00 | XX XX XX XX XX XX XX XX | Sniffing                                     | Having more than one key breaks usual ECP logic                                                                                                        |
+| Access: Car Pairing           | 02      | 02   | 09      | XX XX XX | NA                      | Bruteforce                                   | TCI refers to a combination of car manufacturer + reader position                                                                                      |
+| Access: Car Pairing: Mercedes | 02      | 02   | 09      | 01 02 01 | NA                      | Bruteforce based on SMP-Device-Content info  |                                                                                                                                                        |
+| Identity                      | 02      | 03   | 00      | NA/00    | NA/00                   | Sniffing                                     | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
+| AirDrop                       | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00       | Sniffing                                     | Sent only after device sees a NameDrop frame                                                                                                           |
+| NameDrop                      | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX       | Sniffing                                     | Data part contains a BLE MAC-address                                                                                                                   |
+
+<sub> Source: Bruteforce - found by going over all config combinations; Sniffing - sniffed from a real reader; </sub>  
+<sub> Frames found via brute force may be working but not actually used. In case you have a real samle - let us know if it is different or the same</sub>
 
 # Full frame examples
 
@@ -273,6 +277,13 @@ Examples contain frames without CRC, which needs to be calculated according to t
   `6a01000000`  
   ```
        6a         01      000000 
+    [Header]  [Version]   [TCI]  
+  ```
+
+- GymKit:  
+  `6a01c30000`
+  ```
+       6a         01      c30000 
     [Header]  [Version]   [TCI]  
   ```
 
@@ -399,6 +410,26 @@ There are two known ways of getting those files:
       Here we see that a Mastercard has automatic selection creteria `0800000000` which corresponds to `00001000` in binary for the first byte of transit data mask.  
       Other cards can be analysed the same way.
        
+### Bruteforce
+
+For the most dedicated people, there is a third method of finding useful information.
+
+It is possible to find ECP frames using sheer brute force.
+
+To do that, you have to program an NFC reader that does the following in a loop:
+
+1. Turn off the RF field;
+2. Wait 5-10 seconds;
+3. Turn on RF field;
+4. Attempt to increment/modify one of the values in a ECP frame;
+5. Send the ECP frame 3 times in 0.5 second intervals;
+6. Attempt the ANTICOLL; If successfull continue, otherwise return to 1); 
+7. Observe results, save useful info (uid, ats, sak etc) try doing PPSE, DESFire functions, selecting basic AIDs.
+
+A couple of tips:
+- If you plan on running the brute force while not nearby, you can record a video of your device.
+- Before brute forcing, decide what is your goal, what feature or pass you might want to activate, this will define which values you'll have to try changing.  
+- Do not try to bruteforce all values mindlessly. From the info available we see that most combinations are done using changing terminal type, subtype, and first and last bytes of TCI.
 
 
 # Notes
