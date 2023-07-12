@@ -88,9 +88,13 @@
                         "00": {
                             "id": "terminal-subtype-venue",
                             "name": "Venue",
-                            "description": "Used by following venues: Offices, Parks, Universities",
+                            "description": "Used by following venues: Hotels, Offices, Parks, Universities",
                             "tci": {
-                                "no-info-add-if-found": ""
+                                "02ffff": {
+                                    "id": "tci-hotel-hilton",
+                                    "name": "Hilton Key",
+                                    "description": "Might be a wildcard when no reservation is made"
+                                }
                             }
                         },
                         "06": {
@@ -110,7 +114,11 @@
                             "name": "Automotive",
                             "description": "Used by cars for access and setup",
                             "tci": {
-                                "no-info-add-if-found": ""
+                                "010001": {
+                                    "id": "tci-automotive-bmw",
+                                    "name": "BMW",
+                                    "description": "Used for pairing, access etc"
+                                }
                             }
                         }
                     }
