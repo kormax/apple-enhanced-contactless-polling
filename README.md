@@ -53,7 +53,7 @@ Other features use ECP as well:
 - Identity:  
   Makes apple device act as an NDEF tag for BLE handover in order to connect to a ISO18013 verfier.  
   <p float="left">
-   <img src="./assets/ISO18013.REQUEST.DEMO.webp" alt="![ISO18013 Request promt]" width=200px>
+   <img src="./assets/ISO18013.REQUEST.DEMO.webp" alt="![ISO18013 Request prompt]" width=200px>
   </p>
 - CarKey Setup:  
   Tells the device what car brand it is, causing a car key setup popup to appear on a screen.  
@@ -324,8 +324,8 @@ Examples contain frames without CRC, which needs to be calculated according to t
   ```
        6a         02        c3       02      09      010201 
     [Header]  [Version]  [Config]  [Type] [Subtype]  [TCI]  
-  ```
-  <sub> Replace TCI for any car TCI given in the table to get pairing promt for other brand</sub>
+  ```  
+  <sub> Replace TCI for any car TCI given in the table to get pairing prompt for other brand</sub>
 
 Note that for examples to work 8-bit byte setting should be set in case of NFC-A, 2-byte CRC has to be appended beforehand.
 
