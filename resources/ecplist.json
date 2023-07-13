@@ -2,130 +2,215 @@
     {
         "value": "6a01000000",
         "name": "VAS or payment",
-        "description": "Used when a reader needs a pass or a payment card. Sometimes called VAS over Payment"
+        "description": "Used when a reader needs a pass or a payment card. Sometimes called VAS over Payment",
+        "selectable": true,
+        "aids": [
+            "4f53452e5641532e3031",
+            "325041592e5359532e4444463031"
+        ]
     },
     {
         "value": "6a01000001",
         "name": "VAS and payment",
-        "description": "Also called single tap mode. Displays pass info under a payment card. Allows reading multiple passes with different ids in one tap"
+        "description": "Also called single tap mode. Displays pass info under a payment card. Allows reading multiple passes with different ids in one tap",
+        "selectable": true,
+        "aids": [
+            "4f53452e5641532e3031",
+            "325041592e5359532e4444463031"
+        ]
     },
     {
         "value": "6a01000002",
         "name": "VAS only",
-        "description": "Used when a reader requests passes only"
+        "description": "Used when a reader requests passes only",
+        "selectable": true,
+        "aids": [
+            "4f53452e5641532e3031"
+        ]
     },
     {
         "value": "6a01000003",
         "name": "Payment only",
-        "description": "Used when a reader requests payment cards only. Also disables express mode for chinese transit cards"
+        "description": "Used when a reader requests payment cards only, triggers one to show up. As any other VAS frame, disables express mode for chinese transit cards",
+        "selectable": false,
+        "aids": []
+    },
+    {
+        "value": "6a01c30000",
+        "name": "GymKit",
+        "description": "Device responds to select with UID 00010203",
+        "selectable": true,
+        "aids": [
+            "d2760000850100"
+        ]
     },
     {
         "value": "6a01cf0000",
         "name": "Ignore",
-        "description": "iPhones before IOS17 emit this frame so that other Apple devices don't react to the field during background reading. Also emitted during NFCReaderSession subtypes"
+        "description": "iPhones before IOS17 emit this frame so that other Apple devices don't react to the field during background reading. Also emitted during NFCReaderSession subtypes",
+        "selectable": false,
+        "aids": []
     },
 
     
     {
         "value": "6a02c801000300000000000000",
         "name": "Transit: Ventra",
-        "description": ""
+        "description": "",
+        "selectable": true,
+        "aids": [
+            "325041592e5359532e4444463031",
+            "a0000000049101"
+        ]
     },
     {
         "value": "6a02c801000304000000000000",
         "name": "Transit: HOP Fastpass",
-        "description": ""
+        "description": "",
+        "selectable": true,
+        "aids": [
+            "325041592e5359532e4444463031",
+            "a0000000049100"
+        ]
     },
     {
         "value": "6a02c801000300010000000000",
         "name": "Transit: WMATA",
-        "description": ""
+        "description": "",
+        "selectable": true,
+        "aids": [
+            "637001ff574d415441"
+        ]
     },
     {
         "value": "6a02c801000300027900000000",
         "name": "Transit: TFL",
-        "description": "Found by a member of Proxmark community. Data bytes define a mask of supported EMV payment networks for fallback. In this case: Amex, Visa, Mastercard, Maestro, Vpay"
+        "description": "Found by a member of Proxmark community. Data bytes define a mask of supported EMV payment networks for fallback. In this case: Amex, Visa, Mastercard, Maestro, Vpay",
+        "selectable": true,
+        "aids": [
+            "325041592e5359532e4444463031"
+        ]
     },
     {
         "value": "6a02c801000300050000000000",
         "name": "Transit: LA TAP",
-        "description": ""
+        "description": "",
+        "selectable": true,
+        "aids": [
+            "637001ff4c41"   
+        ]
     },
     {
         "value": "6a02c801000300070000000000",
         "name": "Transit: Clipper",
-        "description": ""
+        "description": "",
+        "selectable": true,
+        "aids": [
+            "637001ff434c4950504552"
+        ]
     },
 
     {
-        "value": "6a02c3020602ffff",
+        "value": "6a02c3020002ffff",
         "name": "Access: Hotel: Hilton",
-        "description": "TCI might be a wildcard before a reservation is made"
+        "description": "TCI might be a wildcard before a reservation is made",
+        "selectable": true,
+        "aids": []
     },
 
     {
         "value": "6a02cb0206021100deadbeefdeadbeef",
         "name": "Access: Home Key",
-        "description": "Last 8 bytes refer to reader group identifier, common for all readers in same home installation, allows to differentiate between keys for different homes"
+        "description": "Last 8 bytes refer to reader group identifier, common for all readers in same home installation, allows to differentiate between keys for different homes",
+        "selectable": true,
+        "aids": [
+            "a0000008580101"
+        ]
     },
 
     {
         "value": "6a02c30209010001",
         "name": "Access: Car Pairing: BMW",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for BMW"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for BMW",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02c30209010201",
         "name": "Access: Car Pairing: Mercedes",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Mercedes"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Mercedes",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02c30209010051",
         "name": "Access: Car Pairing: Genesis",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Genesis"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Genesis",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02c30209010041",
         "name": "Access: Car Pairing: KIA",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for KIA"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for KIA",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02c30209010301",
         "name": "Access: Car Pairing: Hyundai",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Hyundai"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Hyundai",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02c30209010701",
         "name": "Access: Car Pairing: BYD",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for BYD"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for BYD",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02c30209010241",
         "name": "Access: Car Pairing: Denza",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Denza"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Denza",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02c30209010091",
         "name": "Access: Car Pairing: Lotus",
-        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Lotus"
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Lotus",
+        "selectable": false,
+        "aids": []
     },
 
 
     {
         "value": "6a0281030000",
         "name": "Identity",
-        "description": "Used for reading ISO18013 digital IDs"
+        "description": "Used for reading ISO18013 digital IDs",
+        "selectable": true,
+        "aids": [
+            "d2760000850100"
+        ]
     },
 
 
     {
         "value": "6a02890500010001deadbeef6969",
         "name": "NameDrop",
-        "description": "Triggers a warp animation. Device does not respond to poll after this frame, but it serves as a trigger for AirDrop frame. Data part contains BLE MAC address"
+        "description": "Triggers a warp animation. Device does not respond to poll after this frame, but it serves as a trigger for AirDrop frame. Data part contains BLE MAC address",
+        "selectable": false,
+        "aids": []
     },
     {
         "value": "6a02890500010000000000000000",
         "name": "AirDrop",
-        "description": "Only sent if sees a NameDrop frame of other device. Device responds to poll with UID 00010203"
+        "description": "Only sent if sees a NameDrop frame of other device. Device responds to select with UID 00010203",
+        "selectable": true,
+        "aids": [
+            "a000000858044f53452e4348"
+        ]
     }
 ]
