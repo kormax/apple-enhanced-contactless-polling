@@ -20,8 +20,9 @@ This extension:
 - Allows automatic usage of non ISO7816-compliant passes:
   * DESFire in native mode and on card-level instead of app-level;
   * Passes without application id: Mifare Plus, Ultralight, Classic etc.
-- Helps with conflict resolution when there are multiple passes with the same AID:
-  * For instance, both Gymkit and ISO18013 use NDEF AID for BLE handover. ECP allows to differentiate between them in advance.
+- Helps with conflict resolution when there are multiple passes with the same ISO7816 AID:
+  * Allows to differentiate between Gymkit and ISO18013 even though both use NDEF AID for BLE handover. 
+  * Resolves routing issues between access credentials from same system manufacturer (HID, AssaAbloy, WaveLynx, Brio etc) even if they use the same AIDs.
 - May serve as a form of NFC DRM, requiring reader manufacturers to pay licensing fees in order to be able to use this feature and provide better experience for Apple users.
 
 
@@ -97,10 +98,10 @@ Upon entering a loop, device does not answer to the first polling frame it sees,
 
 When device makes a decision, it is mostly, although not in all cases (excluding keys) signified by a card image appearing along with a spinner.
 
-Even though ECP is sent during the polling loop, device does not answer to it. Instead it responds to a polling frame related to technology of the pass that the device had decided to use.
-
-
 <img src="./assets/EM.DECISION.webp" alt="![Image showing express mode animation after decision]" width=250px>
+
+Even though ECP is sent during the polling loop, device does not answer to it directly. Instead it responds to a polling frame related to technology of the pass that the device had decided to use.
+
 
 
 When device enters the loop initially:
@@ -156,7 +157,7 @@ Although not possible during normal operation, if a reader is polling for multip
   
 (BUG) If polling for both ECP and NFC-F, device will display NFC-F card in animation while actually selecting and emulating NFC-A/NFC-B applet. 
 
-(NOTE) In IOS17 new AirDrop frame does not follow the beforementioned rules, as device reacts to it on first iteration in all cases.
+(NOTE) In IOS17 new NameDrop frame does not follow the beforementioned rules, as device reacts to it with an animation on first iteration.
 
 
 # Structure
@@ -230,9 +231,9 @@ The following restrictions apply to the use of TCI:
 
 TCI format is arbitrary, although several patterns related to grouping of similar functionality can be established:
 - VAS: grouped with the last byte having a value of 0x00, 0x01, 0x02, 0x03 depending on mode;
-- Access (Car/Home/University/Office/Venue): First byte is static, other two link to a particular pass provider;
-- Transit: First byte is static, other two link to a particular transit agency (and their pass);
-- CarKey: usually grouped by car manufacturer, consequent values signal readers on front/back doors,charging pad, etc. First byte is always 0x01. Can be seen in wallet configuration json hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
+- Access (Car/Home/University/Office/Venue): First byte is always 0x02, other two link to a particular pass provider;
+- Transit: First byte is always 0x03, other two link to a particular transit agency (and their pass);
+- CarKey: First byte is always 0x01. Next three nibbles serve as manufacturer identifier. Last nibble serves as reader location index. Can be seen in wallet configuration json hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
 
 
 # Configuration examples
@@ -464,6 +465,9 @@ A couple of tips:
     - [Apple Developer Documentation](https://developer.apple.com/documentation/);
     - [Apple Wallet configuration json](https://smp-device-content.apple.com/static/region/v2/config.json);
     - [Apple mention of ECP as Enhanced Contactless Protocol](https://developer.apple.com/videos/play/wwdc2020/10006/?time=1023);
+  - Other:
+    - [Practical EMV: Express Tranit exploit](https://practical_emv.gitlab.io/assets/practical_emv_rp.pdf) - sparked initial interest in ECP research. ECP info there was redacted;
+    - [TFL ECP frame found by Payment Village](https://www.paymentvillage.org/resources/hand-in-your-pocket-without-you-noticing-vulnerabilities-of-mobile-wallets);
   - Forums:
     - [NXP mention that ECP HALs or docs are only given to licensed partners](https://community.nxp.com/t5/NFC/Do-CLRC66302HN-and-CLRC66303HN-support-Apple-s-ECP-Enhanced/m-p/1445260#M9362);
     - [ST mention that ECP docs can be provided only after certification](https://community.st.com/t5/st25-nfc-rfid-tags-and-readers/st25r3917b-technical-support-apple-ecp-guide/td-p/81953);
