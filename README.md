@@ -339,7 +339,13 @@ If you have a Proxmark3, you can test those frames using commands `hf 14a raw -a
 
 Best way to help is to provide more samples of ECP frames and TCIs.  
 Especially interesting (missing) are the following:
-- TCIs of transit agencies that use EMV only:
+- TCIs of transit agencies that use EMV only (transit agency list at [smp-device-content](https://smp-device-content.apple.com/static/region/v2/marketgeos-ad96b072-bd96-4d3c-aff6-6cc477f0d88a.json)):
+  - United Britain:
+    - London (Possibly different for buses?);
+  - United States:
+    - New York (MTA);
+  - Australia:
+    - Sydney (NSW Transport);
   - France:
     - Dreux;
     - Lyon;
@@ -352,11 +358,18 @@ Especially interesting (missing) are the following:
     - Turku.
   - Sweeden:
     - Malmo.
-- Access readers (There might be many unknown variations, so any samples would be welcome):
+  - Belarus:
+    - Minsk.
+  - Ukraine:
+    - Kyiv.
+- Access (There might be many unknown variations, so any samples would be welcome):
   - University;
   - Office;
   - Venues;
-  - Hotels.
+  - Hotels;
+  - Multi-family housing;
+  - Keys:
+    - Car (Real device);
 - HomeKit pairing;
 - Identity (Real device).
 
@@ -368,7 +381,7 @@ Also some unanswered questions remain, which require further analysis and testin
 - If a TCI is 3 bytes long, or it could have a variable length (such as for transit), this question arose after seeing an "Identity" frame;
 - If data part is actually considered a second TCI;
 - If terminal subtype has some special encoding rules;
-- What the unknown configuration byte bits are responsible for.
+- What the unknown configuration byte bits are responsible for (pairing? other flags?).
 
 If you have any findings or thoughts on this manner, feel free to discuss them in issues section.
 
