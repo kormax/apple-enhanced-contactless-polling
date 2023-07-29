@@ -333,6 +333,64 @@ Note that for examples to work 8-bit byte setting should be set in case of NFC-A
 If you have a Proxmark3, you can test those frames using commands `hf 14a raw -akc` for NFC-A and `hf 14b raw -kc -d` for NFC-B. After sending the frame try polling the device using the `hf 14a reader -sk` or `hf 14b reader` command.
 
 
+# Extras
+
+## Enhanced Contactless Protocol
+
+When first researching the topic of ECP, in some rare situations I noticed that some brochures refer to ECP as "Enhanced Contactless Protocol". The first assumption was either that it was a gaslight to put potential researchers off the track, or that it was a simple mistake when creating the material.
+
+When looking into some promotional documents, "Enhanced Contactless Protocol" arose once again, this time in a context of "DESFire ECP compatability mode", which rang a bell.  
+After a bit of brute force analysis, it turned out that DESFire protocol indeed has a special command, created only for iPhones, the sole purpose of which is to notify a device that a transaction was done successfully.  
+This makes me think that ECP (Polling) and ECP (Protocol) are indeed two different terms when used by Apple or their partners. In conlusion, a new explanation for ECP (Protocol) has been formulated.
+
+**Enhanced Contactless Protocol** is a protocol that implements commands that allow to explicitly notify an end device about the state of a transaction, without resorting to making any assumptions about a particular command sequence or operations that need to be done in order for a transaction to be deemed successful (or not).
+
+
+## Success conditions
+
+An NFC transaction is deemed successful when a device produces a checkmark on a screen, following with a notification in special cases.  
+Failure condition is displayed with an exclamation mark, and an optional error popup/device vibration.
+
+NFC protocols can be divided into two categories, depending on how a UX success condition is determinted:
+- Explicit (**Enhanced Contactless Protocol**).
+- Implicit;
+
+Following protocols are considered "enhanced" as they implement an explicit status commands. 
+| Protocol name    | Success condition command                  | Failure condition                                                       | Description |
+| ---------------- | ------------------------------------------ | ----------------------------------------------------------------------- | ----------- |
+| Mifare (DESFire) | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)         | DESELECT/TRESET without the command                                     |             |
+| Digital Car Key  | OP_CONTROL_FLOW(`0x3C`) with success flags | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |             |
+| Apple Home Key   | OP_CONTROL_FLOW(`0x3C`) with success flags | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |             |
+<sub>DESFire command name was made up by me as it's newely discovered, no info about it online.</sub>
+
+
+Following protocols have implicit transaction status detection:  
+| Protocol name | Success condition                                                                                             | Failure condition                                     | Notes                                                                                                                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| CATHAY        | DESELECT/TRESET after AID selection                                                                           | DESELECT/TRESET before AID selection                  |                                                                                                                                                                                                                                                                                |
+| Felica        | 0.5 second delay after TRESET if REQUEST_SERVICE(`0x02`) has been used. 5 second delay after TRESET otherwise | READ/WRITE commands with invalid keys                 | Current success condition causes lots of confusion for users, as a top-up machine may do a TRESET and an additional POLLING for data verification, but it causes a checkmark to appear thus misleading users, making them think that they can take the device out prematurely. |
+| EMV           | Cryptogram generation (EMV mode) or magstripe data read (MAG compatability mode)                              | DSELECT/TRESET before success condition               |                                                                                                                                                                                                                                                                                |
+| VAS           | Successful VAS GET DATA followed with a DESELECT/TRESET                                                       | DSELECT/TRESET after failed DESELECT/TRESET condition |                                                                                                                                                                                                                                                                                |
+
+There are other protocols, but those were left untested as I have no access to them:
+- iCLASS SE;
+- SEOS.  
+  
+It is not known to me if those protocols have dedicated status commands or their status is inferred implicitly. If you have access to any of them (on a device), feel free to add info in a PR.
+
+## Service mode
+
+Service mode is a feature that is available on some contactless passes. It is intended to be used when you need to give a device to someone to conduct service/help operations with the card.
+
+After some experimentation, following changes to the behavior have been noticed:  
+- Device increases the grace period before it ends the NFC authorization;
+- TRESET/DESELECT, implicit, explicit transaction end conditions do not end the NFC session;
+- Device generates a transaction notification/receipt after the service mode period ends (No SE notifications to the SEP?).  
+
+
+Judging from this information, it is safe to assume that what this mode does is that it disables regular transaction status tracking and end condition fulfillment, allowing even an incompatible/slow/uniqe reader to conduct any NFC transaction sequences imaginable, with DESELECTs/TRESETs and so on. Extra time in comparison to regular NFC auth is also given in order to accomodate for all possible service proccesses and communication delays.
+
+
 # Contributing
 
 ## Missing pieces
