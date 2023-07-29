@@ -361,6 +361,7 @@ Following protocols are considered "enhanced" as they implement an explicit stat
 | Mifare (DESFire) | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)         | DESELECT/TRESET without the command                                     |             |
 | Digital Car Key  | OP_CONTROL_FLOW(`0x3C`) with success flags | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |             |
 | Apple Home Key   | OP_CONTROL_FLOW(`0x3C`) with success flags | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |             |
+
 <sub>DESFire command name was made up by me as it's newely discovered, no info about it online.</sub>
 
 
