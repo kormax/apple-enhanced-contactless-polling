@@ -10,7 +10,7 @@
 # Overview
 
 
-Enhanced Contactless Polling/Protocol (ECP) is a proprietary extension to the ISO/IEC 14443 (A/B) standard developed by Apple.  
+Enhanced Contactless Polling (ECP) is a proprietary extension to the ISO/IEC 14443 (A/B) standard developed by Apple.  
 
 It defines a custom data frame that a reader transmits during the polling sequence, giving an end device contextual info about the reader field, allowing it to select an appropriate applet even before any communication starts.  
 
@@ -25,7 +25,7 @@ This extension:
   * Resolves routing issues between access credentials from same system manufacturer (HID, AssaAbloy, WaveLynx, Brio etc) even if they use the same AIDs.
 - May serve as a form of NFC DRM, requiring reader manufacturers to pay licensing fees in order to be able to use this feature and provide better experience for Apple users.
 
-
+<sub>ECP is also sometimes referred to as Enhanced Contactless Protocol. For explanation, look into [extras](#enhanced-contactless-protocol) section</sub>
 # Use cases
 
 
@@ -216,6 +216,7 @@ Data is a part of payload in V2, it contains TCIs and extra data:
 ``` 
 - TCIs define an array of 3 byte long indentifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype;
 - Extra data contents depend on terminal type, subtype, and TCIs:
+  * For transit it contains a [mask of supported EMV payment networks](#emv-transit-fallback) for fallback;
   * For access/key readers it may contain a 8 byte long unique reader group identifier, which allows to differentiate between them for passes of the same type;
   * For HomeKit it contains pairing information;
   * For NameDrop it carries a 6 byte long BLE MAC address;
@@ -335,6 +336,37 @@ If you have a Proxmark3, you can test those frames using commands `hf 14a raw -a
 
 # Extras
 
+## EMV Express Mode
+
+### EMV Transit Fallback 
+
+Express mode for EMV is triggered as a fallback in case a pass for a particular transit TCI has not been found in a system.
+EMV brand support mask is contained in the last 5 bytes of the frame's data. At the current moment only first byte is known to be used IRL.
+
+Following table presents an encoding scheme  for the first byte (bit 00 is the rightmost), with 1 (true) in a particular position signifying support:
+| Bit   | 07  | 06                     | 05   | 04      | 03         | 02  | 01  | 00            |
+| ----- | --- | ---------------------- | ---- | ------- | ---------- | --- | --- | ------------- |
+| Brand | ??  | Possibly VPAY/Electron | VISA | MAESTRO | MASTERCARD | ??  | ??  | Possibly AMEX |
+
+
+To find a bit responsible for your card network, you can modify a particular bit inside the mask. Afterwards, having activated a specific card brand for express mode on your device, observe if express mode will activate when brought near to a test reader.
+
+
+### EMV Express Mode transaction conditions
+
+Unlike other applet types, when EMV is used with express mode, it modifies the default applet behavior, in this case it influences what transaction parameters need to be used for a device to produce a successful transaction + checkmark.
+
+Requirements regarding the transaction seem to be dependant on a payment network brand (as each has a separate applet implementation):
+- Mastercard/Maestro:
+  - MCC is in a transit category
+  - TC/ARQC + CDA
+- Visa:
+  - Offline data authentication for online authorizations enabled
+  - TC/ARQC + CDA
+
+Other card brands may have different success conditions. If you have any info, feel free to create a PR.
+
+
 ## Enhanced Contactless Protocol
 
 When first researching the topic of ECP, in some rare situations I noticed that some brochures refer to ECP as "Enhanced Contactless Protocol". The first assumption was either that it was a gaslight to put potential researchers off the track, or that it was a simple mistake when creating the material.
@@ -356,7 +388,7 @@ NFC protocols can be divided into two categories, depending on how a UX success 
 - Implicit;
 
 Following protocols are considered "enhanced" as they implement an explicit status commands. 
-| Protocol name    | Success condition command                  | Failure condition                                                       | Description |
+| Protocol name    | Success condition command                  | Failure condition                                                       | Notes |
 | ---------------- | ------------------------------------------ | ----------------------------------------------------------------------- | ----------- |
 | Mifare (DESFire) | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)         | DESELECT/TRESET without the command                                     |             |
 | Digital Car Key  | OP_CONTROL_FLOW(`0x3C`) with success flags | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |             |
