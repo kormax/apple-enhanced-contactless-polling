@@ -4,8 +4,7 @@
 <p float="left">
  <img src="./assets/PN532.ECP.DEMO.webp" alt="![ECP Access Home with PN532]" width=250px>
  <img src="./assets/FLIPPER.ECP.DEMO.webp" alt="![ECP Transit Clipper with Flipper Zero]" width=250px>
-</p>
- <img src="./assets/PN5180.ECP.DEMO.webp" alt="![ECP EMV-Transit Ventra with with PN5180]" width=250px>
+  <img src="./assets/PN5180.ECP.DEMO.webp" alt="![ECP EMV-Transit Ventra with with PN5180]" width=250px>
 </p>
 
 # Overview
@@ -80,7 +79,7 @@ Other features use ECP as well:
 Reader side:
 * Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
 HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
-  Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B), MFRC-552 chips;
+  Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B), MFRC552 chips;
 * IOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
   *  MobileDocumentReaderSession for Identity;
@@ -586,7 +585,7 @@ A couple of tips:
     - [PN532](https://www.nxp.com/docs/en/nxp/data-sheets/PN532_C1.pdf) [(Archive)](https://web.archive.org/web/20230401225452/https://www.nxp.com/docs/en/nxp/data-sheets/PN532_C1.pdf);
     - [PN5180](https://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf) [(Archive)](https://web.archive.org/web/20221127182441/http://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf);
     - [ST25R3916](https://www.st.com/resource/en/datasheet/st25r3916.pdf) [(Archive)](https://web.archive.org/web/20230124020718/https://www.st.com/resource/en/datasheet/st25r3916.pdf);
-    - [MFRC-522](https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) [(Archive)](https://web.archive.org/web/20230720011140/https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) - ECP support confirmed by [@kupa22](https://github.com/kupa22).
+    - [MFRC522](https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) [(Archive)](https://web.archive.org/web/20230720011140/https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) - ECP support confirmed by [@kupa22](https://github.com/kupa22).
 * Devices and software used for analysis:
   - Proxmark3 Easy - used to sniff ECP frames out. Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;
