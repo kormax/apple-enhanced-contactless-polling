@@ -152,9 +152,11 @@ In conclusion, it seems that if reader is polling for:
 Tests were conducted using very big intervals between polling frames. IRL if polling is faster device might respond after more frames than shown, presumably because of internal processing delay.  
 
 Although not possible during normal operation, if a reader is polling for multiple cards using express mode that use different technology qualifiers for selection, following technology priority will be applied:
-1. ECP 
-2. NFC-F
-3. CATHAY  
+1. ECP (`ecp`):
+   1. Primary (`ecp.2.tci`);
+   2. EMV Fallback (`ecp.2.open_loop`);
+2. NFC-F (`felica.*`);
+3. CATHAY (`generic.type_a`). 
   
 (BUG) If polling for both ECP and NFC-F, device will display NFC-F card in animation while actually selecting and emulating NFC-A/NFC-B applet. 
 
@@ -191,14 +193,7 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
        XX       XX        XX         XX...
     [Config]  [Type]  [Subtype]  [Data (n)]
   ```
-  - Configuration byte has a following binary format:  
-    ```
-          1        X        0 0      X X X X
-      [Unknown]  [Auth]  [Unknown]  [Length ]  
-    ```
-    - Auth: 0b1 if authentication not required, 0b0 otherwise.  
-      If auth is required pass will be presented on a screen for manual authentication when brought near to the field.
-    - Length: defines a length of data.
+  - Configuration byte. Responsible for feature flags and data length. [More info below](#configuration-byte);  
   - Type contains terminal type:
     - 0x01: Transit;
     - 0x02: Access;
@@ -206,6 +201,21 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
     - 0x05: AirDrop.
   - Subtype depends on type. In most cases it has a value of 0x00;
   - Data. Its content and availability depend on terminal type and subtype. Detailed description below.
+
+
+## Configuration byte
+
+Configuration byte is a mandatory part of a V2 ECP payload. It consists of 4 flag bits and a length nibble:
+
+| Bit      | 07           | 06                          | 05             | 04             | 03  02  01  00 |
+| -------- | ------------ | --------------------------- | -------------- | -------------- | -------------- |
+| Function | ECP Enabled? | Authentication not required | Unknown flag 1 | Unknown flag 2 | Length         |
+
+- Bit 07. Exact meaning unknown.  Default value is `1`. Express mode stops working if value is `0`. ECP frames with this value being `0` not found IRL.
+- Bit 06. Authentication not required. Default value is `1`. Disables express mode if value is `0`, device will bring up a matching pass for manual authentication instead. Access readers may set it when auth is required. Also set to `0` for Identity and AirDrop/NameDrop.  
+- Bit 05-04. Meaning unknown.  Default value is `0`;
+- Bits 03-00. Defines length of the data part (0-15 bytes). If length does not match, device will ignore this ECP frame. 
+
 
 ## Data
 
@@ -496,41 +506,42 @@ Some other devices might also be able to sniff the frames, but due to a lack of 
 
 ### Analysing pass files
 
-The second way of retreiving useful information could be pkpass file analysis.
-There are two known ways of getting those files:  
-1. Jailbreaking your iPhone and looking into wallet app data;
-2. Adding a card to a Mac, and accessing its info from the wallet directory:
-   1. Go to "~/Library/Passes/Cards/" directory.
-   2. Click on any .pkpass, select "Show Package Contents"
-   3. Open the "pass.json" file.
-   4. Inside the file, search for keywords `tci`, `openloop`, `ecp`, `transit`, `automatic`, `selection`, `express`, as in example:
-      ```
-      {
-        "formatVersion":1,
-        "passTypeIdentifier":"paymentpass.com.apple",
-        "teamIdentifier":"Apple Inc.",
-        "paymentApplications":[
-          {
-              "secureElementIdentifier":"133713371337",
-              "applicationIdentifier":"69696969696969696969",
-              "applicationDescription":"Mastercard",
-              "defaultPaymentApplication":true,
-              "supportsOptionalAuthentication":1,
-              "automaticSelectionCriteria":[
-                  {
-                      "type":"ecp.2.open_loop",
-                      "supportsExpress":true,
-                      "openLoopExpressMask":"0800000000"
-                  }
-              ],
-              "supportedTransitNetworkIdentifiers":[],
-          }
-        ]
-      }
-      ```  
-      <sub>Other fields removed to reduce space taken</sub>  
-      Here we see that a Mastercard has automatic selection creteria `0800000000` which corresponds to `00001000` in binary for the first byte of transit data mask.  
-      Other cards can be analysed the same way.
+The second way of retreiving useful information could be pkpass file analysis. It can be done in the following way: 
+1. Extract pass files:
+   1. On MacOS, from "~/Library/Passes/Cards/";
+   2. On jailbroken iPhone from "~/Library/Passes/Cards/";
+   3. On a non-jailbroken iPhone, via an encrypted backup extracted at path "HomeDomain/Library/Passes/Cards, extracted with an app such as iMazing, [iOSBackup](https://github.com/avibrazil/iOSbackup) or similar tools.
+2. Enter the folder with passes;
+3. Click on any .pkpass, select "Show Package Contents"
+4. Open the "pass.json" file.
+5. Inside the file, search for keywords `tci`, `openloop`, `ecp`, `transit`, `automatic`, `selection`, `express`, as in example:
+   ```
+   {
+     "formatVersion":1,
+     "passTypeIdentifier":"paymentpass.com.apple",
+     "teamIdentifier":"Apple Inc.",
+     "paymentApplications":[
+       {
+           "secureElementIdentifier":"133713371337",
+           "applicationIdentifier":"69696969696969696969",
+           "applicationDescription":"Mastercard",
+           "defaultPaymentApplication":true,
+           "supportsOptionalAuthentication":1,
+           "automaticSelectionCriteria":[
+               {
+                   "type":"ecp.2.open_loop",
+                   "supportsExpress":true,
+                   "openLoopExpressMask":"0800000000"
+               }
+           ],
+           "supportedTransitNetworkIdentifiers":[],
+       }
+     ]
+   }
+   ```  
+   <sub>Other fields removed to reduce space taken</sub>  
+   Here we see that a Mastercard has automatic selection creteria `0800000000` which corresponds to `00001000` in binary for the first byte of transit data mask.  
+   All cards can be analysed the same way.
        
 ### Bruteforce
 
@@ -593,4 +604,5 @@ A couple of tips:
   - [RFID Tools app](https://play.google.com/store/apps/details?id=com.rfidresearchgroup.rfidtools) - app that can used to control OFW Proxmark RDV4 from an Android device while in field;
   - [Termux](https://github.com/termux/termux-app) - can be used to run Iceman Fork Proxmark client in field;
   - [TCPUART transparent Bridge](https://play.google.com/store/apps/details?id=com.hardcodedjoy.tcpuart) - used to connect Proxmark to a client running in Termux;
+  - [iOSBackup](https://github.com/avibrazil/iOSbackup) - used to extract data from an encrypted iOS backup;
   - PN532, PN5180, ST25R3916 - chips used to test homebrew ECP reader implementation.
