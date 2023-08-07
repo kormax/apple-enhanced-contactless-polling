@@ -80,7 +80,8 @@ Other features use ECP as well:
 Reader side:
 * Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
 HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
-  Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B), MFRC552 chips;
+  Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B), MFRC552 chips;  
+  For information about those chips and how it can be implemented, visit the [Chips](./CHIPS.md) page;
 * IOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
   *  MobileDocumentReaderSession for Identity;
@@ -569,8 +570,8 @@ A couple of tips:
 
 - This document is based on reverse-engineering efforts done without any access to original documentation. Consider all information provided here as an educated guess that is not officially cofirmed.
 - If you find any mistakes/typos or have extra information to add, feel free to raise an issue or create a pull request.
-- Refer to resources directory to access json database of ECP frames. This info will also be pushed to Proxmark3 repository from time to time.
-
+- Refer to resources directory to access json database of ECP frames. This info will also be pushed to Proxmark3 repository from time to time;
+- For information on implementation for particular chips or modules, refer to [Chips](./CHIPS.md) page.
 
 # References
 
@@ -582,6 +583,7 @@ A couple of tips:
     - [Apple Wallet configuration json](https://smp-device-content.apple.com/static/region/v2/config.json);
     - [Apple mention of ECP as Enhanced Contactless Protocol](https://developer.apple.com/videos/play/wwdc2020/10006/?time=1023);
   - Other:
+    - [Arduino Octopus Card Reader](https://youtu.be/H8cRV5nNZq4) - sparked interest in researching Express Mode, which led to ECP;
     - [Practical EMV: Express Tranit exploit](https://practical_emv.gitlab.io/assets/practical_emv_rp.pdf) - sparked initial interest in ECP research. ECP info there was redacted;
     - [TFL ECP frame found by Payment Village](https://www.paymentvillage.org/resources/hand-in-your-pocket-without-you-noticing-vulnerabilities-of-mobile-wallets);
   - Forums:
