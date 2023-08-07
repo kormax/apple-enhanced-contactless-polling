@@ -8,7 +8,7 @@ All info is provided for informational purposes only.
 
 ## Definitions
 
-If a snippet of code is provided, here are the common constants and function used
+If a snippet of code is provided, here are the common constants and functions used:
 
 ```
 REQA = bytes([0x26])
@@ -41,7 +41,7 @@ def with_crc16a(data):
 
 PN532 is one of the most common chips, having support for most popular NFC technologies and library implementations in many programming languages.  
 It also has a UART interface, which allows it to be connected to a PC via a cheap USB to serial adapter.  
-This cheaps implements common protocols by itself, which makes working with it much easier for novices.
+This chip implements common protocols by itself, which makes working with it much easier for novices.
 
 ### Potential problems
 
@@ -49,7 +49,7 @@ Most PN532 NFC sold are the copies of the modules initially developed by Elechou
 
 During my testing with ~10 clone modules none had issues so severe that led them to be unoperable. The only difference between those modules have been in:
 - Reading distance (field strength);
-- Read stability (lack of);
+- Read stability (lack thereof);
 - Power consumption.
 
 Some modules were able to communicate with my iPhone from a distance of 0 to 8 cm, while others had a sweet spot between 1 and 3 outside of which the device produced collision/protocol/parity errors, so performance was vastly different from a module to module.
