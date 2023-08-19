@@ -167,12 +167,36 @@ The grace period duration setting seems to be separate for each NFC technology, 
 1. ECP(NFC-A/B):
    1. (EMV) Payment card: `300` ms;
    2. Transit card: `750` ms.
-2. Felica:
+2. FeliCa:
    1. Transit card: `750` ms;
 3. CATHAY:
    1. Transit card: `750` ms.
 
 For improved stability and increased polling performance, it is adviced to do polling in `250`-`100` ms intervals or less, keeping in mind the field activity duty cycle.
+
+## Internal proccessing delay
+
+Even though NFC polling can be really fast, it still takes some time for a device to analyse polling frames and make a decision on which routing to activate.
+During tests, following delays have been measured:
+1. ECP(NFC-A/B): 
+   1. PC + PN532: `100`ms;
+   2. Proxmark3: `1031640 / 13560000  * 1000 ~= 76` ms or ~45 polling iterations;
+2. FeliCa: 
+   1. PC + PN532: `50` ms.
+   2. Proxmark3: `547584 / 13560000  * 1000 ~= 40` ms or 3 polling iterations;
+3. CATHAY(NFC-A):
+   1. Proxmark3, no delay:`1042912 / 13560000  * 1000 ~= 77` ms or ~150 polling iterations;
+   2. Proxmark3, `5` ms delay: `979680 / 13560000  * 1000 ~= 72` ms or ~12 polling iterations;
+
+It's important to understand that hardware used for measuring might have some operational delay itself.  
+PC + PN532 method yields bigger measurment error as it runs on a non-real-time system. 
+Proxmark3 method gives more accurate results as measurment is done on a separate device, which is intended specifically for NFC analysis.
+
+As a result of tests, we have following findings:
+- FeliCa has from 50% to 100% less proccessing delay in comparison to NFC-A/B, which is quite interesting.  
+  One assumption is that additional delay may be caused by ECP part of the resolution stack inside of CRS, which does not impact FeliCa resolution, as it has native system-code-based method of resolving applets for express mode.
+- With NFC-A, if polling frame is sent really fast without any arbitrary delays, the device might actually respond a little bit slower (up to `82` ms).  
+  The sweet spot for response speed is about `5` ms guard time between polling attempts, which can reduce delay down to about `70` ms.
 
 
 ## Express Mode priority
@@ -183,6 +207,7 @@ Although not possible during normal operation, if a reader is polling for multip
    2. EMV Fallback (`ecp.2.open_loop`);
 2. FeliCa (`felica.*`);
 3. CATHAY (`generic.type_a`). 
+
 
 
 ## Quirks and bugs:
