@@ -93,10 +93,11 @@ Device side:
 * Can be implemented on chips that allow reading raw frames in emulation mode even before selection.
 
 
-# Decision logic
+# ECP and Express Mode behavior
 
+## Overview
 
-Upon entering a loop, device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies does the field poll for, allowing it to make a fully informed decision on what applet to select later.
+Upon entering a loop, device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies does the field poll for, allowing it to make a fully informed decision on what applet or feature to trigger later.
 
 When device makes a decision, it is mostly, although not in all cases (excluding keys) signified by a card image appearing along with a spinner.
 
@@ -104,7 +105,7 @@ When device makes a decision, it is mostly, although not in all cases (excluding
 
 Even though ECP is sent during the polling loop, device does not answer to it directly. Instead it responds to a polling frame related to technology of the pass that the device had decided to use.
 
-
+## Polling
 
 When device enters the loop initially:
 * In case of a full polling loop (A,B,F) it waits through one full iteration before making a decision on what applet to select:  
@@ -143,14 +144,38 @@ A -> ECP_A -> (ENTRY) -> B -> ECP_B -> F -> A -> ECP_A -> (DECISION) -> B -> (RE
 (ENTRY) -> A -> ECP_A -> F -> A -> ECP_A -> F -> (DECISION) -> A -> (RESPONSE)
 ```
 
-<sub>Characters A, B, and F were used in examples as a shorthand for full polling frame names: WUPA, WUPB, SENSF_REQ respectively. ECP frame has different values depending on a use case _A/B suffix refers to modulation used. </sub>
+<sub>Characters A, B, and F were used in examples as a shorthand for full polling frame names: WUPA, WUPB, SENSF_REQ respectively. ECP frame has different values depending on a use case _A/B suffix refers to modulation used. </sub>  
+<sub>Tests were conducted using very big intervals between polling frames. IRL if polling is faster device might respond after more frames than shown, presumably because of internal processing delay.</sub>
 
-In conclusion, it seems that if reader is polling for:
+
+In conclusion, if reader is polling for:
 * 1 technology, decision is made after third poll, response is given on the fourth;
 * 2 technologies, decision is made after the second polling loop, while the response is given on the third.
 * 3 technologies, decision is made after the first loop, response is given on the second.
 
-Tests were conducted using very big intervals between polling frames. IRL if polling is faster device might respond after more frames than shown, presumably because of internal processing delay.  
+
+## Field detection grace period
+
+Apple devices seem to have a grace period after leaving an NFC field, where if a device re-enters the field in time, it will still consider it to be the same field.  
+It was done in order to better support express mode with devices that turn off NFC field in between polling iterations in order to conserve energy.  
+This way, an end device wouldn't think that it entered a new field on each polling iteration, which would've prevented express mode to be triggered, as it needs at least two loops for selection. 
+
+
+According to tests, grace period duration depends on what pass types are enabled for express mode on the device.
+The grace period duration setting seems to be separate for each NFC technology, with the worst/maximum value taken from enabled pass categories:
+
+1. ECP(NFC-A/B):
+   1. (EMV) Payment card: `300` ms;
+   2. Transit card: `750` ms.
+2. Felica:
+   1. Transit card: `750` ms;
+3. CATHAY:
+   1. Transit card: `750` ms.
+
+For improved stability and increased polling performance, it is adviced to do polling in `250`-`100` ms intervals or less, keeping in mind the field activity duty cycle.
+
+
+## Express Mode priority
 
 Although not possible during normal operation, if a reader is polling for multiple cards using express mode that use different technology qualifiers for selection, following technology priority will be applied:
 1. ECP (`ecp`):
@@ -158,10 +183,12 @@ Although not possible during normal operation, if a reader is polling for multip
    2. EMV Fallback (`ecp.2.open_loop`);
 2. FeliCa (`felica.*`);
 3. CATHAY (`generic.type_a`). 
-  
-(BUG) If polling for both ECP and FeliCa, device will display FeliCa pass in animation while actually selecting and emulating ECP-triggered pass. 
 
-(NOTE) In IOS17 new NameDrop frame does not follow the beforementioned rules, as device reacts to it with an animation on first iteration. Although the response itself is still returned as presented in examples.
+
+## Quirks and bugs:
+
+- If polling for both ECP and FeliCa, device will sometimes display FeliCa pass in animation while actually selecting and emulating ECP-triggered pass. Frequency of this bug depends on polling loop interval.  
+- In IOS17 the new NameDrop frame does not follow the beforementioned rules fully, as device reacts to it with an animation on first iteration. Although the response itself is still returned as presented in examples.
 
 
 # Structure
@@ -436,6 +463,9 @@ After some experimentation, following changes to the behavior have been noticed:
 Judging from this information, it is safe to assume that what this mode does is that it disables regular transaction status tracking and end condition fulfillment, allowing even an incompatible/slow/uniqe reader to conduct any NFC transaction sequences imaginable, with DESELECTs/TRESETs and so on. Extra time in comparison to regular NFC auth is also given in order to accomodate for all possible service proccesses and communication delays.
 
 
+If a contactless reader disables NFC field between polling cycles, it should be aware that NFC controller waits only for about 400 milliseconds before it considers
+
+
 # Contributing
 
 ## Missing pieces
@@ -570,7 +600,7 @@ A couple of tips:
 - If you find any mistakes/typos or have extra information to add, feel free to raise an issue or create a pull request;
 - Material provided here has been collected using publically available methods, without access to original specification. Do not consider provided material as the only source of truth, as some assumptions and descriptions made might end up to be false or not fully correct. The intention of this repository is get as close as possible to the truth, which might take some time and collaboration.
 - Information provided in this repository is intended for educational, research, and personal use. Its use in any other way is not encouraged.  
-- **Beware** that ECP as a technology might be under a legal protection. A mere fact of it being reverse-engineered **does not** mean that it can be used in a commercial product as-is without causing an infringement. For use in commercial applications you should contact Apple through official channels.
+- **Beware** that ECP, just like any other proprietary technology, might be a subject to legal protections depending on jurisdiction. A mere fact of it being reverse-engineered **does not** always mean that it can be used in a commercial product as-is without causing an infringement. For use in commercial applications, you should contact Apple through official channels in order to get approval.
 - For tips on implementation, code examples, overview of verified modules, refer to [Examples](./examples/README.md) directory;
 - For a code-friendly database of ECP frames, refer to [Resources](./resources/) directory.
 
