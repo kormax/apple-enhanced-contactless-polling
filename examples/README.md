@@ -1,6 +1,12 @@
+# Examples
+
+This section provides examples of implementing ECP-like functionality on hardware that's not officially supported:
+- [Broadcast frames with nfcpy](./nfcpy/README.md)
+
+
 # Chips
 
-This document describes chips and modules that ECP can be unofficially implemented on.  
+This section describes chips and modules that ECP can be unofficially implemented on.  
 It also describes common issues that could occur with those chips and ways to overcome them.  
 This document may or may not mention original developers of particular hardware. I am in no way shape or form affiliated with them, have no financial or any other type of interest.  
 All info is provided for informational purposes only.
@@ -14,8 +20,7 @@ If a snippet of code is provided, here are the common constants and functions us
 REQA = bytes([0x26])
 
 # VAS FRAME EXAMPLE
-ECP_FRAME = bytes([0x6a, 0x01, 0x00, 0x00, 0x00])
-
+FRAME = # SOME ARBITRARY FRAME
 
 def crc16a(data):
     w_crc = 0x6363
@@ -33,11 +38,11 @@ def with_crc16a(data):
 ## PN532
 
 <p float="left">
-  <img src="./assets/PN532.ECP.DEMO.webp" alt="![ECP Access Home with PN532]" width=200px>
+  <img src="../assets/PN532.ECP.DEMO.webp" alt="![ECP Access Home with PN532]" width=200px>
 </p>
 
 
-# Overview
+### Overview
 
 PN532 is one of the most common chips, having support for most popular NFC technologies and library implementations in many programming languages.  
 It also has a UART interface, which allows it to be connected to a PC via a cheap USB to serial adapter.  
@@ -97,7 +102,7 @@ To implement ECP on a PN532, there are two solutions:
                     0x00 
                 ])
                 # Send ECP frame (with CRC appended, calculated by you)
-                await self.protocol.in_communicate_thru(with_crc16a(ECP_FRAME), timeout=0)
+                await self.protocol.in_communicate_thru(with_crc16a(FRAME), timeout=0)
     ```
     This implementation assumes that polling is only going to be enabled for type A modulation.  
     Here we use `in_list_passive_target` command as both a way to poll for a card, but also as a way of setting all registers in place before we send an ECP frame.  
@@ -116,7 +121,7 @@ This way won't be described in detail as it requires too much description. I'm o
 ## MFRC522
 
 <p float="left">
-   <img src="./assets/MFRC522.ECP.DEMO.webp" alt="![ECP EMV-Transit Maestro with with PN5180]" width=200px>
+   <img src="../assets/MFRC522.ECP.DEMO.webp" alt="![ECP EMV-Transit Maestro with with PN5180]" width=200px>
 </p>
 
 ### Overview
@@ -132,14 +137,17 @@ No official affordable MFRC522 modules are known to me. All of the ones I've met
 
 The other issue encountered with this module was that with one of the test modules, communication with any battery-powered device did not work at all, as in case of a long data frame device returned protocol/collision/parity error. It is assumed that this either can be caused by a faulty clock crystal, or as a manifestation of very poor matching circuit.
 
-So if you plan on bying this module, just to be sure that you're gonna get a working one, fork out a bit of spare cash and buy 2 or 3 instead.
+This module has a black variant, with a small antenna.  
+A couple of sample modules were tested, all of them displayed more stable NFC performance, although with a smaller operating range in comparison with a blue module.
+
+So if you plan on bying this module, just to be sure that you're gonna get a working one, fork out a bit of spare cash and buy 2 or 3 instead, consider buying a black variant as extra.
 
 
 ### Implementing ECP
 
 One of the advantages of this module is that it's low-level, so provided you have a library implementing regular polling, ECP can be easily added, by copying the function doing REQA/WUPA and sending in ECP frame instead, although setting bit framing beforehand is required.
 
-Following python-like pseudocode describes implementing ECP on an MFRC522:
+Following python-like pseudocode describes the implementation on MFRC522:
 ```
 
 def set_bit_framing(self, bits):
@@ -168,7 +176,7 @@ def run(self):
         if atqa:
             """ Do the anticollision as given in library """
         else:
-            self.transceive(ECP_FRAME, bits_in_last_byte=8)
+            self.transceive(FRAME, bits_in_last_byte=8)
 
 ```
 
@@ -176,7 +184,7 @@ def run(self):
 ## PN5180
 
 <p float="left">
-    <img src="./assets/PN5180.ECP.DEMO.webp" alt="![ECP EMV-Transit Ventra with with PN5180]" width=200px>
+    <img src="../assets/PN5180.ECP.DEMO.webp" alt="![ECP EMV-Transit Ventra with with PN5180]" width=200px>
 </p>
 
 ### Overview
@@ -207,7 +215,7 @@ if (kind <= 1) {
 	if (!sendData(cmd, 1, 0x07))
         return 0;
 } else if (kind == 2) {
-    sendData(ECP_FRAME, 7, 0x00);
+    sendData(FRAME, 7, 0x00);
         return 0;
 }
 // Rest of the code as is
@@ -218,7 +226,7 @@ After modification, use this method in the polling loop with `kind=2` after a re
 ## ST25R3916(B)
 
 <p float="left">
-      <img src="./assets/ST25R3916.ECP.DEMO.webp" alt="![ECP Transit Clipper with ST25R3916 on Flipper Zero]" width=200px>
+    <img src="../assets/ST25R3916.ECP.DEMO.webp" alt="![ECP Transit Clipper with ST25R3916 on Flipper Zero]" width=200px>
 </p>
 
 ### Overview
@@ -263,9 +271,7 @@ There are two ways to implementing ECP on a ST25R3916-equipped device:
     Correct one should give an ability to pass ECP configuration from the higher layers, allow both NFC-A and NFC-B, respect timings and other small aspects.
    
 
-
-
-## Notes
+# Notes
 
 In case you have information about other chip types that you've successfully implemented ECP on, feel free to expand this document with tips, or provide confirmation via an Issue or a PR. Any help would be appreciated.
 
