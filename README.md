@@ -164,13 +164,11 @@ This way, an end device wouldn't think that it entered a new field on each polli
 According to tests, grace period duration depends on what pass types are enabled for express mode on the device.
 The grace period duration setting seems to be separate for each NFC technology, with the worst/maximum value taken from enabled pass categories:
 
-1. ECP(NFC-A/B):
+1. ECP (NFC-A/B) + CATHAY (NFC-A):
    1. (EMV) Payment card: `300` ms;
    2. Transit card: `750` ms.
-2. FeliCa:
+2. FeliCa (NFC-F):
    1. Transit card: `750` ms;
-3. CATHAY:
-   1. Transit card: `750` ms.
 
 For improved stability and increased polling performance, it is adviced to do polling in `250`-`100` ms intervals or less, keeping in mind the field activity duty cycle.
 
@@ -178,13 +176,13 @@ For improved stability and increased polling performance, it is adviced to do po
 
 Even though NFC polling can be really fast, it still takes some time for a device to analyse polling frames and make a decision on which routing to activate.
 During tests, following delays have been measured:
-1. ECP(NFC-A/B): 
+1. ECP (NFC-A/B): 
    1. PC + PN532: `100`ms;
    2. Proxmark3: `1031640 / 13560000  * 1000 ~= 76` ms or ~45 polling iterations;
-2. FeliCa: 
+2. FeliCa (NFC-F): 
    1. PC + PN532: `50` ms.
    2. Proxmark3: `547584 / 13560000  * 1000 ~= 40` ms or 3 polling iterations;
-3. CATHAY(NFC-A):
+3. CATHAY (NFC-A):
    1. Proxmark3, no delay:`1042912 / 13560000  * 1000 ~= 77` ms or ~150 polling iterations;
    2. Proxmark3, `5` ms delay: `979680 / 13560000  * 1000 ~= 72` ms or ~12 polling iterations;
 
