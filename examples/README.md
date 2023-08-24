@@ -15,7 +15,7 @@ Provided information (timings, polling order) can be used to analyze the interna
 Time units are based on NFC carrier periods  `1/13.56MHz`.  
 To calculate timestamps in milliseconds, apply following formula: `(value / 13560000) * 1000`. 
 
-Files in [traces directory](./tracs/) are named in a following fashion:
+Files in [traces directory](./traces/) are named in a following fashion:
 ```{brand}_{device}_{software}_{implementation}_{technology}_{index}.log```  
 If some part is unknown, substitute by `x`.
 
