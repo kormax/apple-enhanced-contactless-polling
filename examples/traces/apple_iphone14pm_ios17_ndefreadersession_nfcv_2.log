@@ -1,0 +1,10 @@
+      Start |        End | Src | Data (! denotes parity error)                                           | CRC | Annotation
+------------+------------+-----+-------------------------------------------------------------------------+-----+--------------------
+          0 |      22016 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY
+    3436448 |    3458464 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY
+    6870176 |    6892192 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY
+   10301568 |   10323584 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY
+   13734400 |   13756416 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY
+   17168000 |   17190016 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY
+   20599392 |   20621408 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY
+   24031616 |   24053632 | Rdr |26  01  00  f6  0a                                                       |  ok | INVENTORY

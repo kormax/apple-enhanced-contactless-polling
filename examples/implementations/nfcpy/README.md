@@ -63,6 +63,19 @@ To run the code, use `python3 main.py` command.
 
 Example code doesn't do anything else apart from sending broadcast frames and printing out the information of found remote contactless targets. Change as you wish.
 
+
+### Common issues
+
+1. If you're running nfcpy on Linux, it may try to increase the baudrate of PN532 connection together with the baudrate of your serial device. Some poorly-made/cloned devices might have problems operating on speeds higher than 115200 baud.  
+   Issue manifests as a timeout error, but only after the initialzation, when board version is printed to the console.  
+   To fix that issue:
+   1. Use another UART adapter;
+   2. Go to library install location, `/site-packages/nfc/clf/pn532.py`.  
+      At line 390, replace `change_baudrate = True` with `change_baudrate = False`.
+2. If you're getting frame index/malformation errors, try increasing broadcast frame response timeout in file `broadcast_frame_contactless_frontend.py` at line 86.  
+   Beware that timeouts larger than 0.3 seconds are not adviced for optimal performance. 
+3. "Everything runs but no magic happens". Verify that you've changed broadcast frame to the value that you need. Beware that default value is just `Hello world` in encoded form.
+
 ## License notice
 
 Example code uses and overrides parts of [nfcpy](https://nfcpy.readthedocs.io) library code.

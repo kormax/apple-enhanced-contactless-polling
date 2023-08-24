@@ -631,20 +631,21 @@ A couple of tips:
 
 * Resources that helped with research:
   - Code analysis:
-    - [IOS16 Runtime Headers](https://developer.limneos.net/?ios=16.3);
+    - [IOS16 Runtime Headers](https://developer.limneos.net/?ios=16.3).
   - Apple resources:
     - [Apple Developer Documentation](https://developer.apple.com/documentation/);
     - [Apple Wallet configuration json](https://smp-device-content.apple.com/static/region/v2/config.json);
     - [Apple mention of ECP as Enhanced Contactless Protocol](https://developer.apple.com/videos/play/wwdc2020/10006/?time=1023);
-  - Other:
+    - [Apple Platform Security](https://help.apple.com/pdf/security/en_US/apple-platform-security-guide.pdf) [(Archive)](https://web.archive.org/web/20230812060036/https://help.apple.com/pdf/security/en_US/apple-platform-security-guide.pdf).
+  - Projects that inspired research:
     - [Arduino Octopus Card Reader](https://youtu.be/H8cRV5nNZq4) - sparked interest in trying to replicate Express Mode, which led to ECP;
     - [Practical EMV: Express Tranit exploit](https://practical_emv.gitlab.io/assets/practical_emv_rp.pdf) - sparked interest in ECP research. ECP info there was redacted, don't bother looking for it;
-    - [TFL ECP frame found by Payment Village](https://www.paymentvillage.org/resources/hand-in-your-pocket-without-you-noticing-vulnerabilities-of-mobile-wallets);
+    - [TFL ECP frame found by Payment Village](https://www.paymentvillage.org/resources/hand-in-your-pocket-without-you-noticing-vulnerabilities-of-mobile-wallets).
   - Forums:
     - [NXP mention that ECP HALs or docs are only given to licensed partners](https://community.nxp.com/t5/NFC/Do-CLRC66302HN-and-CLRC66303HN-support-Apple-s-ECP-Enhanced/m-p/1445260#M9362);
-    - [ST mention that ECP docs can be provided only after certification](https://community.st.com/t5/st25-nfc-rfid-tags-and-readers/st25r3917b-technical-support-apple-ecp-guide/td-p/81953);
+    - [ST mention that ECP docs can be provided only after certification](https://community.st.com/t5/st25-nfc-rfid-tags-and-readers/st25r3917b-technical-support-apple-ecp-guide/td-p/81953).
   - Device operation manuals:
-    - [HID mention of TCI for reader configuration](https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf) [(Archive)](https://web.archive.org/web/20230630195103/https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf);
+    - [HID mention of TCI for reader configuration](https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf) [(Archive)](https://web.archive.org/web/20230630195103/https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf).
   - Chip brochures (with ECP mentions):
     - [PN7150X](https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf) [(Archive)](https://web.archive.org/web/20210920054718/https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf);
     - [ST25](https://www.st.com/resource/en/product_presentation/st25_product_overview.pdf) [(Archive)](https://web.archive.org/web/20230109135439/https://www.st.com/content/ccc/resource/sales_and_marketing/presentation/product_presentation/group1/a9/5d/77/96/be/9a/48/7e/ST25_NFC_RFID_product_overview/files/ST25_product_overview.pdf/jcr:content/translations/en.ST25_product_overview.pdf).
@@ -653,7 +654,11 @@ A couple of tips:
     - [PN532](https://www.nxp.com/docs/en/nxp/data-sheets/PN532_C1.pdf) [(Archive)](https://web.archive.org/web/20230401225452/https://www.nxp.com/docs/en/nxp/data-sheets/PN532_C1.pdf);
     - [PN5180](https://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf) [(Archive)](https://web.archive.org/web/20221127182441/http://www.nxp.com/docs/en/data-sheet/PN5180A0XX-C1-C2.pdf);
     - [ST25R3916](https://www.st.com/resource/en/datasheet/st25r3916.pdf) [(Archive)](https://web.archive.org/web/20230124020718/https://www.st.com/resource/en/datasheet/st25r3916.pdf);
-    - [MFRC522](https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) [(Archive)](https://web.archive.org/web/20230720011140/https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) - ECP support confirmed by [@kupa22](https://github.com/kupa22).
+    - [MFRC522](https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) [(Archive)](https://web.archive.org/web/20230720011140/https://www.nxp.com/docs/en/data-sheet/MFRC522.pdf) - ECP support confirmed by [@kupa22](https://github.com/kupa22).  
+  - Other:
+    - [Global Platform Contactless Registry Service](https://globalplatform.org/wp-content/uploads/2016/01/GPC_2.2_C_ContactlessServices_v1.1.1.pdf) [(Archive)](https://web.archive.org/web/20230824143113/https://globalplatform.org/wp-content/uploads/2016/01/GPC_2.2_C_ContactlessServices_v1.1.1.pdf);
+    - [Strong Customer Authentication for Apple Pay Security Target](https://www.ssi.gouv.fr/uploads/2022/03/anssi-cible-cc-2022_04en.pdf) [(Archive)](https://web.archive.org/web/20230824144712/https://www.ssi.gouv.fr/uploads/2022/03/anssi-cible-cc-2022_04en.pdf);
+    - [Global Platform Card Specification](https://globalplatform.org/wp-content/uploads/2018/05/GPC_CardSpecification_v2.3.1_PublicRelease_CC.pdf) [(Archive)](https://web.archive.org/web/20230725201402/https://globalplatform.org/wp-content/uploads/2018/05/GPC_CardSpecification_v2.3.1_PublicRelease_CC.pdf).
 * Devices and software used for analysis:
   - Proxmark3 Easy - used to sniff ECP frames out. Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;

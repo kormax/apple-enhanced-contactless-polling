@@ -1,7 +1,25 @@
 # Examples
 
-This section provides examples of implementing ECP-like functionality on hardware that's not officially supported:
-- [Broadcast frames with nfcpy](./nfcpy/README.md)
+# Implementations 
+
+This section contains implementation examples of ECP-like functionality on hardware that's not officially supported:
+
+- [Broadcast frames with nfcpy](./implementations/nfcpy/README.md)
+
+
+# Traces
+
+This section contains Proxmark3 - styled traces of NFC polling in ECP-enabled devices.  
+Provided information (timings, polling order) can be used to analyze the internal polling implementation of the devices that are ECP-compliant, which could help replicating exact behavior for best performance.
+
+Time units are based on NFC carrier periods  `1/13.56MHz`.  
+To calculate timestamps in milliseconds, apply following formula: `(value / 13560000) * 1000`. 
+
+Files in [traces directory](./tracs/) are named in a following fashion:
+```{brand}_{device}_{software}_{implementation}_{technology}_{index}.log```  
+If some part is unknown, substitute by `x`.
+
+If you manage to collect traces for other polling types or from other devices (i.e. physical transit readers) extra samples would be appreciated.
 
 
 # Chips

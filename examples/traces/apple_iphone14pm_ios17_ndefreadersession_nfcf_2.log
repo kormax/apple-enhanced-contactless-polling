@@ -1,0 +1,11 @@
+      Start |        End | Src | Data (! denotes parity error)                                           | CRC | Annotation
+------------+------------+-----+-------------------------------------------------------------------------+-----+--------------------
+          0 |       2120 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    1218944 |    1221064 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    2437760 |    2439880 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    3656576 |    3658696 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    4875520 |    4877640 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    6094336 |    6096456 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    7312640 |    7314760 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    8531840 |    8533960 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
+    9750656 |    9752776 | Rdr |b2  4d  06  00  ff  ff  00  00  09  21                                   |  ok | POLLING
