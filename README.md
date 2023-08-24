@@ -13,7 +13,7 @@
 
 Enhanced Contactless Polling (ECP) is a proprietary extension to the ISO/IEC 14443 (A/B) standard developed by Apple.  
 
-It defines a custom data frame that a reader transmits during the polling sequence, giving an end device contextual info about the reader field, allowing it to select an appropriate applet even before any communication starts.  
+It defines a custom data frame that a contactless reader has to transmit during the polling sequence, providing an end device with contextual info about the reader field, allowing it to decide if it wants to resolve routing to a particular applet or system feature even before any back and forth communication starts.  
 
 This extension:
 - Helps to make sure that end device will only start communication with the reader if it has something useful to do with it, avoiding error beeps and card clashing;
@@ -308,7 +308,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
 | Name                          | Version | Type | Subtype | TCI      | Data                       | Source                                       | Description                                                                                                                                            |
 | ----------------------------- | ------- | ---- | ------- | -------- | -------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| VAS or payment                | 01      | NA   | NA      | 00 00 00 | NA                         | Sniffing                                     |                                                                                                                                                        |
+| VAS or payment                | 01      | NA   | NA      | 00 00 00 | NA                         | Sniffing                                     | VAS ECP configurations are sometimes regarded to as VASUP-A(B)                                                                                                                                                       |
 | VAS and payment               | 01      | NA   | NA      | 00 00 01 | NA                         | Bruteforce                                   |                                                                                                                                                        |
 | VAS only                      | 01      | NA   | NA      | 00 00 02 | NA                         | Bruteforce                                   |                                                                                                                                                        |
 | Payment only                  | 01      | NA   | NA      | 00 00 03 | NA                         | Bruteforce                                   | As all other VAS frames, also serves as anti-CATHAY                                                                                                    |
@@ -434,8 +434,8 @@ Other card brands may have different success conditions. If you have any info, f
 When first researching the topic of ECP, in some rare situations I noticed that some brochures refer to ECP as "Enhanced Contactless Protocol". The first assumption was either that it was a gaslight to put potential researchers off the track, or that it was a simple mistake when creating the material.
 
 When looking into some promotional documents, "Enhanced Contactless Protocol" arose once again, this time in a context of "DESFire ECP compatability mode", which rang a bell.  
-After a bit of brute force analysis, it turned out that DESFire protocol indeed has a special command, created only for iPhones, the sole purpose of which is to notify a device that a transaction was done successfully.  
-This makes me think that ECP (Polling) and ECP (Protocol) are indeed two different terms when used by Apple or their partners. In conlusion, a new explanation for ECP (Protocol) has been formulated.
+After a bit of analysis, it turned out that DESFire protocol indeed has a special command created specifically for Apple devices, the sole purpose of which is to notify a device that a transaction has been done successfully.  
+This leads to thought that ECP (Polling) and ECP (Protocol) are indeed two different terms when used by Apple and/or their partners. In conlusion, a new explanation for ECP (Protocol) has been formulated.
 
 **Enhanced Contactless Protocol** is a protocol that implements commands that allow to explicitly notify an end device about the state of a transaction, without resorting to making any assumptions about a particular command sequence or operations that need to be done in order for a transaction to be deemed successful (or not).
 
@@ -460,18 +460,15 @@ Following protocols are considered "enhanced" as they implement an explicit stat
 
 
 Following protocols have implicit transaction status detection:  
-| Protocol name | Success condition                                                                                             | Failure condition                        | Notes                                                                                                                                                                                                                                                                          |
-| ------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| CATHAY        | DESELECT/TRESET after AID selection                                                                           | DESELECT/TRESET before AID selection     |                                                                                                                                                                                                                                                                                |
-| FeliCa        | 0.5 second delay after TRESET if REQUEST_SERVICE(`0x02`) has been used. 5 second delay after TRESET otherwise | READ/WRITE commands with invalid keys    | Current success condition causes lots of confusion for users, as a top-up machine may do a TRESET and an additional POLLING for data verification, but it causes a checkmark to appear thus misleading users, making them think that they can take the device out prematurely. |
-| EMV           | Cryptogram generation (EMV mode) or magstripe data read (MAG compatability mode)                              | DSELECT/TRESET before success condition  |                                                                                                                                                                                                                                                                                |
-| VAS           | Successful VAS GET DATA followed with a DESELECT/TRESET                                                       | DSELECT/TRESET after failed VAS GET DATA |                                                                                                                                                                                                                                                                                |
+| Protocol name | Success condition                                                                                             | Failure condition                       | Notes                                                                                                                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| CATHAY        | DESELECT/TRESET after AID selection                                                                           | DESELECT/TRESET before AID selection    |                                                                                                                                                                                                                                                                                |
+| FeliCa        | 0.5 second delay after TRESET if REQUEST_SERVICE(`0x02`) has been used. 5 second delay after TRESET otherwise | READ/WRITE commands with invalid keys   | Current success condition causes lots of confusion for users, as a top-up machine may do a TRESET and an additional POLLING for data verification, but it causes a checkmark to appear thus misleading users, making them think that they can take the device out prematurely. |
+| EMV           | Cryptogram generation (EMV mode) or magstripe data read (MAG compatability mode)                              | DSELECT/TRESET before success condition |                                                                                                                                                                                                                                                                                |
+| VAS           | Successful GET_DATA followed with a DESELECT/TRESET                                                           | DSELECT/TRESET after failed GET_DATA    |                                                                                                                                                                                                                                                                                |
 
-There are other protocols, but those were left untested as I have no access to them:
-- iCLASS SE;
-- SEOS.  
   
-It is not known to me if those protocols have dedicated status commands or their status is inferred implicitly. If you have access to any of them (on a device), feel free to add info in a PR.
+There may be other protocols supported by Apple Wallet (SEOS, etc.), but due to lack of samples to do tests on, determining their success condition detection cannot be done yet. If you have access to any of them (on a device), feel free to add info in a PR.
 
 ## Service mode
 
@@ -542,31 +539,18 @@ If you have any findings or thoughts on this manner, feel free to discuss them i
 
 ## Collecting information
 
-### Sniffing
-
-One way to collect information about ECP is via a sniffing functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone. 
-A couple of tidbits encountered:
-- First time using the app I've encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux;
-- Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
-
-More info on installing and running Proxmark client on your Android device [here](https://github.com/RfidResearchGroup/proxmark3/blob/master/doc/termux_notes.md).
-
-The command needed to collect traces is `hf 14a sniff`, after activating the command hold the Proxmark near a reader for a couple of seconds. In some cases it is needed to tap/touch the reader in order to wake it up as it might not poll to save energy.
-
-After that, press a button on a device, traces will be downloaded and can be viewed with a `hf 14a list` command. You'll know which ones are the ones.  
-
-Some other devices might also be able to sniff the frames, but due to a lack of personal experience I cannot recommend any.
-
 ### Analysing pass files
 
-The second way of retreiving useful information could be pkpass file analysis. It can be done in the following way: 
+The easiest way of retreiving useful information that doesn't require any special tools is `.pkpass` file analysis.  
+It can be done in the following way: 
 1. Extract pass files:
-   1. On MacOS, from "~/Library/Passes/Cards/";
-   2. On jailbroken iPhone from "~/Library/Passes/Cards/";
-   3. On a non-jailbroken iPhone, via an encrypted backup extracted at path "HomeDomain/Library/Passes/Cards, extracted with an app such as iMazing, [iOSBackup](https://github.com/avibrazil/iOSbackup) or similar tools.
+   1. On MacOS, from `~/Library/Passes/Cards/`;
+   2. On jailbroken iPhone from `~/Library/Passes/Cards/`;
+   3. On a non-jailbroken iPhone, via an encrypted backup extracted at path `HomeDomain/Library/Passes/Cards`.  
+   File extraction can be done using an app such as iMazing, [iOSBackup](https://github.com/avibrazil/iOSbackup) or similar tools.
 2. Enter the folder with passes;
-3. Click on any .pkpass, select "Show Package Contents"
-4. Open the "pass.json" file.
+3. Click on any `.pkpass` file, select "Show Package Contents"
+4. Open the `pass.json` file.
 5. Inside the file, search for keywords `tci`, `openloop`, `ecp`, `transit`, `automatic`, `selection`, `express`, as in example:
    ```
    {
@@ -596,6 +580,24 @@ The second way of retreiving useful information could be pkpass file analysis. I
    Here we see that a Mastercard has automatic selection creteria `0800000000` which corresponds to `00001000` in binary for the first byte of transit data mask.  
    All cards can be analysed the same way.
        
+
+### Sniffing
+
+Second way of collection information about ECP is via a sniffing.  
+It can be achieved using functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone.  
+A couple of tidbits encountered:
+- First time using the app I've encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux;
+- Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
+
+More info on installing and running Proxmark client on your Android device [here](https://github.com/RfidResearchGroup/proxmark3/blob/master/doc/termux_notes.md).
+
+The command needed to collect traces is `hf 14a sniff`, after activating the command hold the Proxmark near a reader for a couple of seconds. In some cases it is needed to tap/touch the reader in order to wake it up as it might not poll to save energy.
+
+After that, press a button on a device, traces will be downloaded and can be viewed with a `hf 14a list` command. You'll know which ones are the ones.  
+
+Some other devices might also be able to sniff the frames, but due to a lack of personal experience I cannot recommend any.
+
+
 ### Bruteforce
 
 For the most dedicated people, there is a third method of finding useful information.
@@ -646,6 +648,8 @@ A couple of tips:
     - [ST mention that ECP docs can be provided only after certification](https://community.st.com/t5/st25-nfc-rfid-tags-and-readers/st25r3917b-technical-support-apple-ecp-guide/td-p/81953).
   - Device operation manuals:
     - [HID mention of TCI for reader configuration](https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf) [(Archive)](https://web.archive.org/web/20230630195103/https://www3.hidglobal.com/sites/default/files/resource_files/plt-03683_b.7_-_hid_reader_manager_app_user_guide_ios.pdf).
+  - Device brochures:
+    - [Springcard - Springpass](https://files.springcard.com/pub/%5Bpsl21043-aa%5D_springpass_mobile_wallet_pass_creator_EN.pdf) [(Archive)](https://web.archive.org/web/20230108133706/https://files.springcard.com/pub/[psl21043-aa]_springpass_mobile_wallet_pass_creator_EN.pdf) - mentions that VAS ECP frame is called VASUP-A;
   - Chip brochures (with ECP mentions):
     - [PN7150X](https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf) [(Archive)](https://web.archive.org/web/20210920054718/https://www.nxp.com/docs/en/brochure/PN7150X_LF.pdf);
     - [ST25](https://www.st.com/resource/en/product_presentation/st25_product_overview.pdf) [(Archive)](https://web.archive.org/web/20230109135439/https://www.st.com/content/ccc/resource/sales_and_marketing/presentation/product_presentation/group1/a9/5d/77/96/be/9a/48/7e/ST25_NFC_RFID_product_overview/files/ST25_product_overview.pdf/jcr:content/translations/en.ST25_product_overview.pdf).
