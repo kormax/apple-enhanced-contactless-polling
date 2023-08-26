@@ -483,9 +483,6 @@ After some experimentation, following changes to the behavior have been noticed:
 Judging from this information, it is safe to assume that what this mode does is that it disables regular transaction status tracking and end condition fulfillment, allowing even an incompatible/slow/uniqe reader to conduct any NFC transaction sequences imaginable, with DESELECTs/TRESETs and so on. Extra time in comparison to regular NFC auth is also given in order to accomodate for all possible service proccesses and communication delays.
 
 
-If a contactless reader disables NFC field between polling cycles, it should be aware that NFC controller waits only for about 400 milliseconds before it considers
-
-
 # Contributing
 
 ## Missing pieces
