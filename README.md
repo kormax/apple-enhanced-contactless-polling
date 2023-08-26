@@ -81,7 +81,7 @@ Reader side:
 * Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
 HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
   Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B), MFRC552 chips;  
-  For information about those chips and how it can be implemented, visit the [Chips](./CHIPS.md) page;
+  For information about those chips and how it can be implemented, visit the [Examples](./examples/README.md) page;
 * IOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
   *  MobileDocumentReaderSession for Identity;
