@@ -178,6 +178,13 @@
         "aids": []
     },
     {
+        "value": "6a02c302090102b1",
+        "name": "Access: Car Pairing: YW",
+        "description": "Device does not respond to poll after this frame. Displays a car pairing popup for YW",
+        "selectable": false,
+        "aids": []
+    },
+    {
         "value": "6a02c30209010091",
         "name": "Access: Car Pairing: Lotus",
         "description": "Device does not respond to poll after this frame. Displays a car pairing popup for Lotus",
