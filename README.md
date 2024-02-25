@@ -10,7 +10,6 @@
 
 # Overview
 
-
 Enhanced Contactless Polling (ECP) is a proprietary extension to the ISO/IEC 14443 (A/B) standard developed by Apple.  
 
 It defines a custom data frame that a contactless reader has to transmit during the polling sequence, providing an end device with contextual info about the reader field, allowing it to decide if it wants to resolve routing to a particular applet or system feature even before any back and forth communication starts.  
@@ -77,7 +76,6 @@ Other features use ECP as well:
 
 # Device support
 
-
 Reader side:
 * Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
 HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
@@ -105,6 +103,7 @@ When device makes a decision, it is mostly, although not in all cases (excluding
 <img src="./assets/EM.DECISION.webp" alt="![Image showing express mode animation after decision]" width=250px>
 
 Even though ECP is sent during the polling loop, device does not answer to it directly. Instead it responds to a polling frame related to technology of the pass that the device had decided to use.
+
 
 ## Polling
 
@@ -173,9 +172,10 @@ The grace period duration setting seems to be separate for each NFC technology, 
 
 For improved stability and increased polling performance, it is adviced to do polling in `250`-`100` ms intervals or less, keeping in mind the field activity duty cycle.
 
-## Internal proccessing delay
 
-Even though NFC polling can be really fast, it still takes some time for a device to analyse polling frames and make a decision on which routing to activate.
+## Communication start delay
+
+Even though NFC polling can be really fast, it still takes some time for a device to analyse polling frames and make a decision on which routing to activate in order to begin communication.  
 During tests, following delays have been measured:
 1. ECP (NFC-A/B): 
    1. PC + PN532: `100`ms;
@@ -192,8 +192,9 @@ PC + PN532 method yields bigger measurment error as it runs on a non-real-time s
 Proxmark3 method gives more accurate results as measurment is done on a separate device, which is intended specifically for NFC analysis.
 
 As a result of tests, we have following findings:
-- FeliCa has from 50% to 100% less proccessing delay in comparison to NFC-A/B, which is quite interesting.  
-  One assumption is that additional delay may be caused by ECP part of the resolution stack inside of CRS, which does not impact FeliCa resolution, as it has native system-code-based method of resolving applets for express mode.
+- FeliCa has from 50% to 100% less processing delay in comparison to NFC-A/B, which is quite interesting.  
+  * One assumption is that additional delay may be caused by ECP part of the resolution stack inside of CRS, which does not impact FeliCa resolution, as it has native system-code-based method of resolving applets for express mode.  
+  * The other assumption, is that this delay is arbitrary, and is used to prevent situations when communication is started "just as" the device barely enters the field, were signal strength is poor and long commands can be interrupted.
 - With NFC-A, if polling frame is sent really fast without any arbitrary delays, the device might actually respond a little bit slower (up to `82` ms).  
   The sweet spot for response speed is about `5` ms guard time between polling attempts, which can reduce delay down to about `70` ms.
 
@@ -206,6 +207,8 @@ Although not possible during normal operation, if a reader is polling for multip
    2. EMV Fallback (`ecp.2.open_loop`);
 2. FeliCa (`felica.*`);
 3. CATHAY (`generic.type_a`). 
+
+<sub>There could be more valid express mode qualifiers available, but they have to be verified to be used on real passes before being listed here. If you have any info, feel free to create a PR.</sub>
 
 
 ## Quirks and bugs:
@@ -228,6 +231,7 @@ Each ECP frame consists of a header, version, payload and CRC:
 - Version number can be either 0x01 or 0x02;
 - Payload: Version-dependent;
 - CRC (Calculated via ISO14443A/B algorithm, according to the modulation used).
+
 
 ## Payload
 
@@ -283,6 +287,7 @@ Data is a part of payload in V2, it contains TCIs and extra data:
   * For HomeKit it contains pairing information;
   * For NameDrop it carries a 6 byte long BLE MAC address;
   * For AirDrop it carries a 6 byte long zeroed out value.
+
 
 ## TCI
 
@@ -342,6 +347,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
 <sub> Source: Bruteforce - found by going over all config combinations; Sniffing - sniffed from a real reader; File - retrieved from pass file; Configuration - retreived from smp-device-content configuration json</sub>  
 <sub> Frames found via brute force may be working but not actually used. In case you have a real samle - let us know if it is different or the same</sub>
+
 
 # Full frame examples
 
@@ -453,10 +459,10 @@ NFC protocols can be divided into two categories, depending on how a UX success 
 - Implicit;
 
 Following protocols are considered "enhanced" as they implement explicit status commands. 
-| Protocol name                                                                 | Success condition command                                                         | Failure condition                                                       | Notes |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----- |
-| Mifare DESFire                                                                | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)                                                | DESELECT/TRESET without the command                                     |       |
-| Unified Access (all CarKey, HomeKey, AccessKey, Aliro subvariants) | OP_CONTROL_FLOW(`0x3C`) with success flags or DESELECT after attestation exchange | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |       |
+| Protocol name                                                   | Success condition command                                                         | Failure condition                                                       | Notes |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----- |
+| Mifare DESFire                                                  | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)                                                | DESELECT/TRESET without the command                                     |       |
+| Unified Access (all CarKey, HomeKey, AccessKey, Aliro variants) | OP_CONTROL_FLOW(`0x3C`) with success flags or DESELECT after attestation exchange | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |       |
 
 <sub>DESFire command name was made up by me as it's newely discovered, no info about it online.</sub>
 
@@ -471,7 +477,8 @@ Following protocols have implicit transaction status detection:
 
 Other protocols supported by Apple Wallet, such as:
 - BMAC, SPTCC (Legacy China Transit);
-- Seos;
+- Seos.  
+
 Were not researched due to lack of samples to do tests on. If you have access to any of them (on a device), feel free to add info in a PR.
 
 
