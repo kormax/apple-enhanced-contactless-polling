@@ -16,14 +16,14 @@ Enhanced Contactless Polling (ECP) is a proprietary extension to the ISO/IEC 144
 It defines a custom data frame that a contactless reader has to transmit during the polling sequence, providing an end device with contextual info about the reader field, allowing it to decide if it wants to resolve routing to a particular applet or system feature even before any back and forth communication starts.  
 
 This extension:
-- Helps to make sure that end device will only start communication with the reader if it has something useful to do with it, avoiding error beeps and card clashing;
+- Helps to make sure that end device will only start communication with the reader if it has something useful to do with it, avoiding error beeps and card clash;
 - Increases privacy and security as it complicates brute force scanning for available passes on the device in a single tap.
 - Allows automatic usage of non ISO7816-compliant passes:
   * DESFire in native mode and on card-level instead of app-level;
-  * Passes without application id: Mifare Plus, Ultralight, Classic etc.
+  * Passes without application id (Mifare Plus in some cases).
 - Helps with conflict resolution when there are multiple passes with the same ISO7816 AID:
   * Allows to differentiate between Gymkit and ISO18013 even though both use NDEF AID for BLE handover. 
-  * Resolves routing issues between access credentials from same system manufacturer (HID, AssaAbloy, WaveLynx, Brio etc) even if they use the same AIDs.
+  * Resolves routing issues between access credentials from same system manufacturer (HID, AssaAbloy, WaveLynx, Brivo, Kisi, etc.) even if they use the same AIDs.
 - May serve as a form of NFC DRM, requiring reader manufacturers to pay licensing fees in order to be able to use this feature and provide better experience for Apple users.
 
 <sub>ECP is also sometimes referred to as Enhanced Contactless Protocol. For explanation, look into [extras](#enhanced-contactless-protocol) section</sub>
@@ -39,9 +39,10 @@ Express mode for most passes (apart from FeliCa and CATHAY) is implemented using
   - Venue (Theme parks);
   - Apartment (Multi-family homes);
   - Hotel.
-- Keys:
+- Keys ("shareable" access passes):
   - Car;
-  - [Home](https://github.com/kormax/apple-home-key).
+  - [Home](https://github.com/kormax/apple-home-key);
+  - Access.
 
 Other features use ECP as well:
 - Value Added Services ([VAS](https://github.com/kormax/apple-vas)):  
@@ -80,13 +81,13 @@ Other features use ECP as well:
 Reader side:
 * Can be implemented in software on most devices, provided that a low-level access to NFC hardware is available. In some cases it is required to reimplement parts of the protocol stack in software when doing so.  
 HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but homebrew solution is easy to implement.  
-  Proof of concept was successfuly tested using PN532, PN5180, ST25R3916(B), MFRC552 chips;  
+  Proof of concept was successfully tested using PN532, PN5180, ST25R3916(B), MFRC552 chips;  
   For information about those chips and how it can be implemented, visit the [Examples](./examples/README.md) page;
-* IOS has special reader APIs that make the device emit specific ECP frames:
+* iOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
   *  MobileDocumentReaderSession for Identity;
   *  When using other derivatives of NFCReaderSession, device emits Ignore frame so that other apple devices don't react to it.
-* Android does not have an API for ECP, although some android-based handheld reader manufacturers have implemented this feature in their software.  
+* Android does not have an API for ECP, although some Android-based handheld reader manufacturers have implemented this feature in their software.  
   
 Device side:
 * Implemented using a customized CRS applet.
@@ -207,7 +208,6 @@ Although not possible during normal operation, if a reader is polling for multip
 3. CATHAY (`generic.type_a`). 
 
 
-
 ## Quirks and bugs:
 
 - If polling for both ECP and FeliCa, device will sometimes display FeliCa pass in animation while actually selecting and emulating ECP-triggered pass. Frequency of this bug depends on polling loop interval.  
@@ -226,7 +226,7 @@ Each ECP frame consists of a header, version, payload and CRC:
 ```
 - Header byte has a constant value of (HEX) 6A;
 - Version number can be either 0x01 or 0x02;
-- Payload: Version-dependant;
+- Payload: Version-dependent;
 - CRC (Calculated via ISO14443A/B algorithm, according to the modulation used).
 
 ## Payload
@@ -258,11 +258,11 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
 
 Configuration byte is a mandatory part of a V2 ECP payload. It consists of 4 flag bits and a length nibble:
 
-| Bit      | 07           | 06                          | 05             | 04             | 03  02  01  00 |
-| -------- | ------------ | --------------------------- | -------------- | -------------- | -------------- |
-| Function | ECP Enabled? | Authentication not required | Unknown flag 1 | Unknown flag 2 | Length         |
+| Bit      | 07                         | 06                          | 05             | 04             | 03  02  01  00 |
+| -------- | -------------------------- | --------------------------- | -------------- | -------------- | -------------- |
+| Function | Automatic pass presentment | Authentication not required | Unknown flag 1 | Unknown flag 2 | Length         |
 
-- Bit 07. Exact meaning unknown.  Default value is `1`. Express mode stops working if value is `0`. ECP frames with this value being `0` not found IRL.
+- Bit 07. Automatic pass presentment. Default value is `1`. Matching pass does not appear on a screen if this value is set to `0`, which also disables express mode as a result. ECP frames with this value being `0` not found IRL.
 - Bit 06. Authentication not required. Default value is `1`. Disables express mode if value is `0`, device will bring up a matching pass for manual authentication instead. Access readers may set it when auth is required. Also set to `0` for Identity and AirDrop/NameDrop.  
 - Bit 05-04. Meaning unknown.  Default value is `0`;
 - Bits 03-00. Defines length of the data part (0-15 bytes). If length does not match, device will ignore this ECP frame. 
@@ -286,7 +286,7 @@ Data is a part of payload in V2, it contains TCIs and extra data:
 
 ## TCI
 
-TCI, also referred to as Terminal Capabilities Identifier, is an arbitrary three-byte-long value that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
+Terminal Capabilities Identifier (TCI), is an arbitrary three-byte-long value that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
 
 The following restrictions apply to the use of TCI:
 - Some TCIs are bound to a reader with particular type and subtype (which requires V2), while others trigger for all types (support V1). It is not known if this behavior is a bug or was intentional;
@@ -334,6 +334,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | Access: Car Pairing: BYD      | 02      | 02   | 09      | 01 07 01 | NA                         | Configuration                                |                                                                                                                                                        |
 | Access: Car Pairing: Denza    | 02      | 02   | 09      | 01 02 41 | NA                         | Configuration                                |                                                                                                                                                        |
 | Access: Car Pairing: YW       | 02      | 02   | 09      | 01 02 B1 | NA                         | Configuration                                |                                                                                                                                                        |
+| Access: Car Pairing: FCB      | 02      | 02   | 09      | 01 02 D1 | NA                         | Configuration                                |                                                                                                                                                        |
 | Access: Car Pairing: Lotus    | 02      | 02   | 09      | 01 00 91 | NA                         | Configuration                                |                                                                                                                                                        |
 | Identity                      | 02      | 03   | 00      | NA/00    | NA/00                      | Sniffing                                     | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
 | AirDrop                       | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00          | Sniffing                                     | Sent only after device sees a NameDrop frame                                                                                                           |
@@ -399,9 +400,7 @@ If you have a Proxmark3, you can test those frames using commands `hf 14a raw -a
 
 # Extras
 
-## EMV Express Mode
-
-### EMV Transit Fallback 
+## EMV Transit Fallback 
 
 Express mode for EMV is triggered as a fallback in case a pass for a particular transit TCI has not been found in a system.
 EMV brand support mask is contained in the last 5 bytes of the frame's data. At the current moment only first byte is known to be used IRL.
@@ -415,11 +414,14 @@ Following table presents an encoding scheme  for the first byte (bit 00 is the r
 To find a bit responsible for your card network, you can modify a particular bit inside the mask. Afterwards, having activated a specific card brand for express mode on your device, observe if express mode will activate when brought near to a test reader.
 
 
-### EMV Express Mode transaction conditions
+## Strong customer authentication
 
-Unlike other applet types, when EMV is used with express mode, it modifies the default applet behavior, in this case it influences what transaction parameters need to be used for a device to produce a successful transaction + checkmark.
+Some applets have an ability to modify behavior based on the conditions that the transaction has been started under: 
 
-Requirements regarding the transaction seem to be dependant on a payment network brand (as each has a separate applet implementation):
+- Unified Access applet (excluding the HomeKey variant) has an ability to guarantee to the reader, if requested, that a transaction has been initiated via manual authentication, which protects against exciting a device with express ECP frame and using it on a reader that mandates SCA;
+- When EMV is used with express mode, it modifies transaction parameters that need to be used for a device to produce a successful transaction + check mark.
+
+Requirements regarding the EMV transaction seem to be dependent on a payment network brand (as each has a separate applet implementation):
 - Mastercard/Maestro:
   - MCC is in a transit category
   - TC/ARQC + CDA
@@ -427,35 +429,34 @@ Requirements regarding the transaction seem to be dependant on a payment network
   - Offline data authentication for online authorizations enabled
   - TC/ARQC + CDA
 
-Other card brands may have different success conditions. If you have any info, feel free to create a PR.
+Other card brands may have different success conditions and behavior changes. If you have any info, feel free to create a PR.
 
 
 ## Enhanced Contactless Protocol
 
-When first researching the topic of ECP, in some rare situations I noticed that some brochures refer to ECP as "Enhanced Contactless Protocol". The first assumption was either that it was a gaslight to put potential researchers off the track, or that it was a simple mistake when creating the material.
+When first researching the topic of ECP, in some rare situations I noticed that some brochures refer to ECP as "Enhanced Contactless Protocol". The first assumption was either made to put potential researchers off the track, or that it was a simple mistake when creating the material.
 
-When looking into some promotional documents, "Enhanced Contactless Protocol" arose once again, this time in a context of "DESFire ECP compatability mode", which rang a bell.  
+When looking into some promotional documents, "Enhanced Contactless Protocol" arose once again, this time in a context of "DESFire ECP compatibility mode", which rang a bell.  
 After a bit of analysis, it turned out that DESFire protocol indeed has a special command created specifically for Apple devices, the sole purpose of which is to notify a device that a transaction has been done successfully.  
-This leads to thought that ECP (Polling) and ECP (Protocol) are indeed two different terms when used by Apple and/or their partners. In conlusion, a new explanation for ECP (Protocol) has been formulated.
+This leads to the thought that ECP (Polling) and ECP (Protocol) are indeed two different terms when used by Apple and/or their partners. In conclusion, a new explanation for ECP (Protocol) has been formulated.
 
 **Enhanced Contactless Protocol** is a protocol that implements commands that allow to explicitly notify an end device about the state of a transaction, without resorting to making any assumptions about a particular command sequence or operations that need to be done in order for a transaction to be deemed successful (or not).
 
 
 ## Success conditions
 
-An NFC transaction is deemed successful when a device produces a checkmark on a screen, following with a notification in special cases.  
+An NFC transaction is deemed successful when a device produces a check mark on a screen, following with a notification in special cases.  
 Failure condition is displayed with an exclamation mark, and an optional error popup/device vibration.
 
-NFC protocols can be divided into two categories, depending on how a UX success condition is determinted:
+NFC protocols can be divided into two categories, depending on how a UX success condition is determined:
 - Explicit (**Enhanced Contactless Protocol**).
 - Implicit;
 
-Following protocols are considered "enhanced" as they implement an explicit status commands. 
-| Protocol name    | Success condition command                                                         | Failure condition                                                       | Notes |
-| ---------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----- |
-| Mifare (DESFire) | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)                                                | DESELECT/TRESET without the command                                     |       |
-| Digital Car Key  | OP_CONTROL_FLOW(`0x3C`) with success flags                                        | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |       |
-| Apple Home Key   | OP_CONTROL_FLOW(`0x3C`) with success flags or DESELECT after attestation exchange | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |       |
+Following protocols are considered "enhanced" as they implement explicit status commands. 
+| Protocol name                                                                 | Success condition command                                                         | Failure condition                                                       | Notes |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----- |
+| Mifare DESFire                                                                | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)                                                | DESELECT/TRESET without the command                                     |       |
+| Unified Access (all CarKey, HomeKey, AccessKey, Aliro subvariants) | OP_CONTROL_FLOW(`0x3C`) with success flags or DESELECT after attestation exchange | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |       |
 
 <sub>DESFire command name was made up by me as it's newely discovered, no info about it online.</sub>
 
@@ -463,13 +464,16 @@ Following protocols are considered "enhanced" as they implement an explicit stat
 Following protocols have implicit transaction status detection:  
 | Protocol name | Success condition                                                                                             | Failure condition                       | Notes                                                                                                                                                                                                                                                                          |
 | ------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| CATHAY        | DESELECT/TRESET after AID selection                                                                           | DESELECT/TRESET before AID selection    |                                                                                                                                                                                                                                                                                |
-| FeliCa        | 0.5 second delay after TRESET if REQUEST_SERVICE(`0x02`) has been used. 5 second delay after TRESET otherwise | READ/WRITE commands with invalid keys   | Current success condition causes lots of confusion for users, as a top-up machine may do a TRESET and an additional POLLING for data verification, but it causes a checkmark to appear thus misleading users, making them think that they can take the device out prematurely. |
+| T-Union       | DESELECT/TRESET after AID selection                                                                           | DESELECT/TRESET before AID selection    |                                                                                                                                                                                                                                                                                |
+| FeliCa        | 0.5 second delay after TRESET if REQUEST_SERVICE(`0x02`) has been used. 5 second delay after TRESET otherwise | READ/WRITE commands with invalid keys   | Current success condition causes lots of confusion for users, as a top-up machine may do a TRESET and an additional POLLING for data verification, but it causes a check mark to appear thus misleading users, making them think that they can take the device out prematurely. |
 | EMV           | Cryptogram generation (EMV mode) or magstripe data read (MAG compatability mode)                              | DSELECT/TRESET before success condition |                                                                                                                                                                                                                                                                                |
 | VAS           | Successful GET_DATA followed with a DESELECT/TRESET                                                           | DSELECT/TRESET after failed GET_DATA    |                                                                                                                                                                                                                                                                                |
 
-  
-There may be other protocols supported by Apple Wallet (SEOS, etc.), but due to lack of samples to do tests on, determining their success condition detection cannot be done yet. If you have access to any of them (on a device), feel free to add info in a PR.
+Other protocols supported by Apple Wallet, such as:
+- BMAC, SPTCC (Legacy China Transit);
+- Seos;
+Were not researched due to lack of samples to do tests on. If you have access to any of them (on a device), feel free to add info in a PR.
+
 
 ## Service mode
 
@@ -481,7 +485,7 @@ After some experimentation, following changes to the behavior have been noticed:
 - Device generates a transaction notification/receipt after the service mode period ends (No SE notifications to the SEP?).  
 
 
-Judging from this information, it is safe to assume that what this mode does is that it disables regular transaction status tracking and end condition fulfillment, allowing even an incompatible/slow/uniqe reader to conduct any NFC transaction sequences imaginable, with DESELECTs/TRESETs and so on. Extra time in comparison to regular NFC auth is also given in order to accomodate for all possible service proccesses and communication delays.
+Judging from this information, it is safe to assume that what this mode does is that it disables regular transaction status tracking and end condition fulfillment, allowing even an incompatible/slow/unique reader to conduct any NFC transaction sequences imaginable, with DESELECTs/TRESETs and so on. Extra time in comparison to regular NFC auth is also given in order to accomodate for all possible service processes and communication delays.
 
 
 # Contributing
@@ -521,6 +525,7 @@ Especially interesting (missing) are the following:
   - Multi-family housing;
 - Keys:
   - Car (Real device);
+  - Access;
 - HomeKit pairing;
 - Identity (Standalone reader). Be careful not to get on a no-fly list if you dare to go and try sniffing data from it.
 
@@ -533,7 +538,7 @@ Also some unanswered questions remain, which require further analysis and testin
 - If terminal subtype has some special encoding rules;
 - What the unknown configuration byte bits are responsible for (pairing or other flags?).
 
-If you have any findings or thoughts on this manner, feel free to discuss them in issues section.
+If you have any findings or thoughts on this matter, feel free to discuss them in issues section.
 
 ## Collecting information
 
@@ -609,7 +614,7 @@ To do that, you have to program an NFC reader that does the following in a loop:
 3. Turn on RF field;
 4. Attempt to increment/modify one of the values in a ECP frame;
 5. Send the ECP frame 3 times in 0.5 second intervals;
-6. Attempt wake-up with anticollision; If successfull continue, otherwise return to 1); 
+6. Attempt wake-up with anticollision; If successful continue, otherwise return to 1); 
 7. Observe results, save useful info (uid, ats, sak etc) try doing PPSE, DESFire functions, selecting basic AIDs.
 
 A couple of tips:
@@ -617,11 +622,10 @@ A couple of tips:
 - Before brute forcing, decide what is your goal, what feature or pass you might want to activate, this will define which values you'll have to try changing.  
 - Do not try to bruteforce all values mindlessly. From the info available we see that most combinations are done using changing terminal type, subtype, and first and last bytes of TCI.
 
-
 # Notes
 
 - If you find any mistakes/typos or have extra information to add, feel free to raise an issue or create a pull request;
-- Material provided here has been collected using publically available methods, without access to original specification. Do not consider provided material as the only source of truth, as some assumptions and descriptions made might end up to be false or not fully correct. The intention of this repository is get as close as possible to the truth, which might take some time and collaboration.
+- Material provided here has been collected using publicly available methods, without access to original specification. Do not consider provided material as the only source of truth, as some assumptions and descriptions made might end up being false or not fully correct. The intention of this repository is get as close as possible to the truth, which might take some time and collaboration.
 - Information provided in this repository is intended for educational, research, and personal use. Its use in any other way is not encouraged.  
 - **Beware** that ECP, just like any other proprietary technology, might be a subject to legal protections depending on jurisdiction. A mere fact of it being reverse-engineered **does not** always mean that it can be used in a commercial product as-is without causing an infringement. For use in commercial applications, you should contact Apple through official channels in order to get approval.
 - For tips on implementation, code examples, overview of verified modules, refer to [Examples](./examples/README.md) directory;
