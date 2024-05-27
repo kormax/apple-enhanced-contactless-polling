@@ -109,6 +109,15 @@
             "637001ff434c4950504552"
         ]
     },
+    {
+        "value": "6a02c8010003095a0000000000",
+        "name": "Transit: Navigo",
+        "description": "",
+        "selectable": true,
+        "aids": [
+            "A0000004040125"
+        ]
+    },
 
     {
         "value": "6a02c3020002ffff",

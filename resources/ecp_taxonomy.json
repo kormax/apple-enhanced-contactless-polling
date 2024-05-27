@@ -68,6 +68,11 @@
                                     "id": "tci-clipper",
                                     "name": "Clipper",
                                     "description": ""
+                                },
+                                "03095a": {
+                                    "id": "tci-navigo",
+                                    "name": "Navigo",
+                                    "description": ""
                                 }
                             },
 

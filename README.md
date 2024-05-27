@@ -81,7 +81,7 @@ Other features use ECP as well:
 Reader side:
 * Can be implemented in software on most devices, provided that low-level access to NFC hardware is available. In some cases, it is required to re-implement parts of the protocol stack in the software when doing so.  
 HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but a homebrew solution is easy to implement.  
-  Proof of concept was successfully tested using PN532, PN5180, ST25R3916(B), MFRC552 chips;  
+  Proof of concept was successfully tested using PN532, PN5180, ST25R3916(B), MFRC552 chips and PCSCV2 readers;  
   For information about those chips and how it can be implemented, visit the [Examples](./examples/README.md) page;
 * iOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
@@ -315,7 +315,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 
 
 | Name                          | Version | Type | Subtype | TCI      | Data                       | Source                                       | Description                                                                                                                                            |
-| ----------------------------- | ------- | ---- | ------- | -------- | -------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|-------------------------------|---------|------|---------|----------|----------------------------|----------------------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | VAS or payment                | 01      | NA   | NA      | 00 00 00 | NA                         | Sniffing                                     | VAS ECP configurations are sometimes regarded to as VASUP-A(B)                                                                                         |
 | VAS and payment               | 01      | NA   | NA      | 00 00 01 | NA                         | Bruteforce                                   |                                                                                                                                                        |
 | VAS only                      | 01      | NA   | NA      | 00 00 02 | NA                         | Bruteforce                                   |                                                                                                                                                        |
@@ -329,12 +329,13 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | Transit: TFL                  | 02      | 01   | 00      | 03 00 02 | 79 00 00 00 00             | Sniffing: Payment Village/Proxmark community | Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                           |
 | Transit: LA Tap               | 02      | 01   | 00      | 03 00 05 | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
 | Transit: Clipper              | 02      | 01   | 00      | 03 00 07 | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
+| Transit: Navigo               | 02      | 01   | 00      | 03 09 5a | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
 | Access                        | 02      | 02   | XX      | XX XX XX | NA/XX XX XX XX XX XX XX XX | Assumption based on other data               | TCI refers to a pass provider, Data is reader group identifier                                                                                         |
 | Access: Venue                 | 02      | 02   | 00      | XX XX XX | NA                         | HID Reader configuration manual              |                                                                                                                                                        |
 | Access: Hotel: Hilton         | 02      | 02   | 00      | 02 ff ff | NA                         | File                                         | TCI might be a wildcard in case a booking is not made, needs further testing                                                                           |
 | Access: Home Key              | 02      | 02   | 06      | 02 11 00 | XX XX XX XX XX XX XX XX    | Sniffing/File                                | Having more than one key breaks usual ECP logic                                                                                                        |
 | Access: Car Pairing           | 02      | 02   | 09      | XX XX XX | NA                         | Bruteforce                                   | TCI refers to a combination of car manufacturer + reader position. Too many combinations involved. For rest refer to smp-device-content                |
-| Access: Car Pairing: BMW      | 02      | 02   | 09      | 01 00 01 | NA                         | Configuration                                |                                                                                                                                                        |
+| Access: Car Pairing: BMW/MINI | 02      | 02   | 09      | 01 00 01 | NA                         | Configuration                                |                                                                                                                                                        |
 | Access: Car Pairing: Mercedes | 02      | 02   | 09      | 01 02 01 | NA                         | Configuration                                |                                                                                                                                                        |
 | Access: Car Pairing: Genesis  | 02      | 02   | 09      | 01 00 51 | NA                         | Configuration                                |                                                                                                                                                        |
 | Access: Car Pairing: KIA      | 02      | 02   | 09      | 01 00 41 | NA                         | Configuration                                |                                                                                                                                                        |
@@ -619,8 +620,19 @@ It can be done in the following way:
 
 ### Sniffing
 
-The second way of collecting information about ECP is via sniffing.  
-It can be achieved using the functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone.  
+The second way of collecting information about ECP is via sniffing.
+
+
+#### Android
+
+Thanks to Observe Mode feature introduced in Android 15, most flagship mobile handsets now have an ability to sniff polling frames without the use of any external hardware.
+
+[Android 15 Observe Mode Demo App](https://github.com/kormax/android-observe-mode-demo) can be used to collect data about the polling loop, including all custom polling frames such as ECP.
+
+
+#### Proxmark
+
+Sniffing can also be done using the functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone.  
 A couple of tidbits encountered:
 - The first time using the app I encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux;
 - Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
@@ -709,6 +721,7 @@ A couple of tips:
   - Proxmark3 Easy - used to sniff ECP frames out. Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;
   - [RFID Tools app](https://play.google.com/store/apps/details?id=com.rfidresearchgroup.rfidtools) - app that can used to control OFW Proxmark RDV4 from an Android device while in field;
+  - [Android 15 Observe Mode Demo App](https://github.com/kormax/android-observe-mode-demo) - app used to collect polling frame information with a regular mobile phone;
   - [Termux](https://github.com/termux/termux-app) - can be used to run Iceman Fork Proxmark client in field;
   - [TCPUART transparent Bridge](https://play.google.com/store/apps/details?id=com.hardcodedjoy.tcpuart) - used to connect Proxmark to a client running in Termux;
   - [iOSBackup](https://github.com/avibrazil/iOSbackup) - used to extract data from an encrypted iOS backup;
