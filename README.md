@@ -2,10 +2,10 @@
 
 
 <p float="left">
-  <img src="./assets/PN532.ECP.DEMO.webp" alt="![ECP Access Home with PN532]" width=200px>
-  <img src="./assets/ST25R3916.ECP.DEMO.webp" alt="![ECP Transit Clipper with ST25R3916 on Flipper Zero]" width=200px>
-  <img src="./assets/PN5180.ECP.DEMO.webp" alt="![ECP EMV-Transit Ventra with with PN5180]" width=200px>
-  <img src="./assets/MFRC522.ECP.DEMO.webp" alt="![ECP EMV-Transit Maestro with with PN5180]" width=200px>
+  <img src="./assets/PN532.ECP.DEMO.webp" alt="ECP Access Home with PN532" width=200px>
+  <img src="./assets/ST25R3916.ECP.DEMO.webp" alt="ECP Transit Clipper with ST25R3916 on Flipper Zero" width=200px>
+  <img src="./assets/PN5180.ECP.DEMO.webp" alt="ECP EMV-Transit Ventra with PN5180" width=200px>
+  <img src="./assets/MFRC522.ECP.DEMO.webp" alt="ECP EMV-Transit Maestro with PN5180" width=200px>
 </p>
 
 
@@ -13,7 +13,7 @@
 
 Enhanced Contactless Polling (ECP) is a proprietary extension to the ISO/IEC 14443 (A/B) standard developed by Apple.  
 
-It defines a custom data frame that a contactless reader has to transmit during the polling sequence, providing an end device with contextual info about the reader field, allowing it to decide if it wants to resolve routing to a particular applet or system feature even before any back and forth communication starts.  
+It defines a custom data frame that a contactless reader has to transmit during the polling sequence, providing an end device with contextual info about the reader field, allowing it to decide if it wants to resolve routing to a particular applet or system feature even before any back-and-forth communication starts.  
 
 This extension:
 - Helps to make sure that the end device will only start communication with the reader if it has something useful to do with it, avoiding error beeps and card clash;
@@ -22,8 +22,8 @@ This extension:
   * DESFire in native mode and on card-level instead of app-level;
   * Passes without application ID (Mifare Plus in some cases).
 - Helps with conflict resolution when there are multiple passes with the same ISO7816 AID:
-  * Allows to differentiate between Gymkit and ISO18013 even though both use NDEF AID for BLE handover. 
-  * Resolves routing issues between access credentials from the same system manufacturer (HID, AssaAbloy, WaveLynx, Brivo, Kisi, etc.) even if they use the same AIDs and the underlying technology does not support subcredentials at a higher lever.
+  * Allows the device to differentiate between GymKit and ISO18013 even though both use NDEF AID for BLE handover. 
+  * Resolves routing issues between access credentials from the same system manufacturer (HID, AssaAbloy, WaveLynx, Brivo, Kisi, etc.) even if they use the same AIDs and the underlying technology does not support subcredentials at application level.
 - May serve as a form of NFC DRM, requiring reader manufacturers to pay licensing fees in order to be able to use this feature and provide a better experience for Apple users.
 
 <sub>ECP is also sometimes referred to as Enhanced Contactless Protocol. For explanation, look into [extras](#enhanced-contactless-protocol) section</sub>
@@ -31,62 +31,56 @@ This extension:
 
 # Use cases
 
-Express mode for most passes (apart from FeliCa and CATHAY) is implemented using ECP. That includes:
+Express mode for most passes (apart from FeliCa and GenericA) is implemented using ECP. That includes:
 - Credit cards (For transit fallback);
 - Transit cards;
-- Access passes:
+- Access passes and keys:
   - University;
   - Office badges;
   - Venue (Theme parks);
   - Apartment (Multi-family homes);
-  - Hotel.
-- Keys ("shareable" access passes):
+  - Hotel;
   - Car;
-  - [Home](https://github.com/kormax/apple-home-key);
-  - Access.
+  - [Home](https://github.com/kormax/apple-home-key).
 
 Other features use ECP as well:
 - Value Added Services ([VAS](https://github.com/kormax/apple-vas)):  
-  Allows the reader to select the VAS applet and try to get pass in advance (although failing to do so), causing a pass to appear on a screen for authentication or under a payment card if one is selected.  
-  <img src="./assets/VASONLY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
-  <img src="./assets/VASANDPAY.BEFORE.DEMO.webp" alt="![Image showing VAS]" width=200px>
-  <img src="./assets/VASANDPAY.AFTER.DEMO.webp" alt="![Image showing VAS]" width=200px>
+  Allows the reader to select the VAS applet and try to get a pass in advance (although failing to do so), causing a pass to appear on a screen for authentication or under a payment card if one is selected.  
+  <img src="./assets/VASONLY.BEFORE.DEMO.webp" alt="VAS requested authentication" width=200px>
+  <img src="./assets/VASANDPAY.BEFORE.DEMO.webp" alt="VAS will be used with payment" width=200px>
+  <img src="./assets/VASANDPAY.AFTER.DEMO.webp" alt="VAS was used with payment" width=200px>
 - [GymKit](https://github.com/kormax/apple-gymkit):  
   Makes Apple Watch act as an NDEF tag for BLE handover in order to connect to supported gym equipment.  
-  <img src="./assets/GYMKIT.DEMO.webp" alt="![Image showing GymKit setup]" width=200px>
+  <img src="./assets/GYMKIT.DEMO.webp" alt="GymKit setup" width=200px>
 - Identity:  
-  Makes Apple device act as an NDEF tag for BLE handover in order to connect to a ISO18013 verfier.  
+  Makes an Apple device act as an NDEF tag for BLE handover in order to connect to an ISO18013 verifier.  
   <p float="left">
-   <img src="./assets/ISO18013.REQUEST.DEMO.webp" alt="![ISO18013 Request prompt]" width=200px>
+   <img src="./assets/ISO18013.REQUEST.DEMO.webp" alt="ISO18013 Request prompt" width=200px>
   </p>
 - CarKey Setup:  
   Tells the device what car brand it is, causing a car key setup popup to appear on a screen.  
   <p float="left">
-   <img src="./assets/CARKEY.SETUP.IOS16.DEMO.webp" alt="![Image showing IOS16 CarKey pairing prompt]" width=200px>
-   <img src="./assets/CARKEY.SETUP.IOS17.DEMO.webp" alt="![Image showing IOS17 CarKey pairing prompt]" width=200px>
+  <img src="./assets/CARKEY.SETUP.IOS16.DEMO.webp" alt="iOS 16 CarKey pairing prompt" width=200px>
+  <img src="./assets/CARKEY.SETUP.IOS17.DEMO.webp" alt="iOS 17 CarKey pairing prompt" width=200px>
   </p>
 - Field ignore:  
-  Makes Apple devices not react (by react meaning displaying a default payment card) to a field generated by other apple devices.
+  Makes Apple devices not react (where "react" means displaying a default payment card) to a field generated by other Apple devices.
 - AirDrop:  
-  Replaces field ignore in IOS17 for background reading, used to negotiate an AirDrop session. NameDrop is a special case of AirDrop. Triggers a warp animation.  
+  Replaces field ignore in iOS 17 for background reading, used to negotiate an AirDrop session. NameDrop is a special case of AirDrop and it triggers a warp animation.  
   <p float="left">
-   <img src="./assets/AIRDROP.DEMO.webp" alt="![AirDrop warp animation preview]" width=200px>
+   <img src="./assets/AIRDROP.DEMO.webp" alt="AirDrop warp animation preview" width=200px>
   </p>
-- HomeKit:  
-  Allows appliances with an NFC reader that lack card emulation mode to convey pairing info and bring up a pairing prompt when a user device is brought near to it. 
-  
 
 # Device support
 
 Reader side:
 * Can be implemented in software on most devices, provided that low-level access to NFC hardware is available. In some cases, it is required to re-implement parts of the protocol stack in the software when doing so.  
-HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but a homebrew solution is easy to implement.  
-  Proof of concept was successfully tested using PN532, PN5180, ST25R3916(B), MFRC552 chips and PCSCV2 readers;  
-  For information about those chips and how it can be implemented, visit the [Examples](./examples/README.md) page;
+  * HALs/Libraries for most popular chips contain separate confidential versions that include ECP support and are given to approved partners only, but a homebrew solution is easy to implement.  
+  * Proof of concept was successfully tested using PN532, PN5180, ST25R3916(B), MFRC522 chips and PCSCV2 readers; For information about those chips and how ECP can be implemented on them, visit the [Examples](./examples/README.md) page.
 * iOS has special reader APIs that make the device emit specific ECP frames:
   *  NFCVASReaderSession, PaymentCardReaderSession for VAS;
   *  MobileDocumentReaderSession for Identity;
-  *  When using other derivatives of NFCReaderSession, the device emits the Ignore frame so that other Apple devices don't react to it;
+  *  When using other derivatives of NFCReaderSession, the device emits the Ignore frame so that other Apple devices don't react to it.
 * Some Android-based handheld reader manufacturers have implemented this feature in their software.  
   
 Device side:
@@ -99,19 +93,20 @@ Device side:
 
 ## Overview
 
-Upon entering a loop, the device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies does the field poll for, allowing it to make a fully informed decision on what applet or feature to trigger later.
+Upon entering a loop, the device does not answer to the first polling frame it sees, instead opting to wait and see what other technologies the field polls for, allowing it to make a fully informed decision on what applet or feature to trigger later.
 
 When the device makes a decision, it is mostly, although not in all cases (excluding keys) signified by a card image appearing along with a spinner.
 
-<img src="./assets/EM.DECISION.webp" alt="![Image showing express mode animation after decision]" width=250px>
+<img src="./assets/EM.DECISION.webp" alt="Image showing express mode animation after decision" width=250px>
 
-Even though ECP is sent during the polling loop, device does not answer to it directly. Instead, it responds to a polling frame related to the technology of the pass that the device had decided to use.
+Even though ECP is sent during the polling loop, the device does not answer to it directly. Instead, it responds to a polling frame related to the technology of the pass that the device had decided to use.
 
 
 ## Polling
 
-When device enters the loop initially:
+When the device enters the loop initially:
 * In case of a full polling loop (A,B,F) it waits through one full iteration before making a decision on what applet to select:  
+
 ```
 (ENTRY) -> A -> ECP_A -> B -> ECP_B -> F -> (DECISION) -> A -> (RESPONSE)
 ```
@@ -121,7 +116,7 @@ A -> ECP_A -> (ENTRY) -> B -> ECP_B -> F -> A -> ECP_A -> (DECISION) -> B -> (RE
 ```
 
 
-* In case of partial or wierdly-ordered polling loop, behavior is different. For example:
+* In case of partial or weirdly-ordered polling loop, behavior is different. For example:
 
 ```
 (ENTRY) -> A -> ECP_A -> A -> ECP_A -> (DECISION) -> A -> (RESPONSE)
@@ -147,14 +142,14 @@ A -> ECP_A -> (ENTRY) -> B -> ECP_B -> F -> A -> ECP_A -> (DECISION) -> B -> (RE
 (ENTRY) -> A -> ECP_A -> F -> A -> ECP_A -> F -> (DECISION) -> A -> (RESPONSE)
 ```
 
-<sub>Characters A, B, and F were used in examples as a shorthand for full polling frame names: WUPA, WUPB, SENSF_REQ respectively. ECP frame has different values depending on a use case _A/B suffix refers to the modulation used. </sub>  
+<sub>Characters A, B, and F were used in examples as a shorthand for full polling frame names: WUPA, WUPB, SENSF_REQ respectively. ECP frame has different values depending on the use case. The _A/B suffix refers to the modulation used. </sub>  
 <sub>Tests were conducted using very big intervals between polling frames. IRL if polling is faster device might respond after more frames than shown, presumably because of internal processing delay.</sub>
 
 
 In conclusion, if the reader is polling for:
 * 1 technology, the decision is made after the third poll, the response is given on the fourth;
 * 2 technologies, the decision is made after the second polling loop, while the response is given on the third.
-* 3 technologies, the decision is made after the first loop, response is given on the second.
+* 3 technologies, the decision is made after the first loop, the response is given on the second.
 
 
 ## Field detection grace period
@@ -167,26 +162,26 @@ This way, an end device wouldn't think that it entered a new field on each polli
 According to tests, the grace period duration depends on what pass types are enabled for express mode on the device.
 The grace period duration setting seems to be separate for each NFC technology, with the worst/maximum value taken from enabled pass categories:
 
-1. ECP (NFC-A/B) + CATHAY (NFC-A):
+1. ECP (NFC-A/B) + GENERIC-A (NFC-A):
    1. (EMV) Payment card: `300` ms;
    2. Transit card: `750` ms.
 2. FeliCa (NFC-F):
    1. Transit card: `750` ms;
 
-For improved stability and increased polling performance, it is advised to do polling in `250`-`100` ms intervals or less, keeping in mind the field activity duty cycle.
+For improved stability and increased polling performance, it is advised to poll in the `100`-`250` ms range or faster, keeping in mind the field activity duty cycle.
 
 
 ## Communication start delay
 
-Even though NFC polling can be really fast, it still takes some time for a device to analyse polling frames and make a decision on which routing to activate in order to begin communication.  
-During tests, following delays have been measured:
+Even though NFC polling can be really fast, it still takes some time for a device to analyze polling frames and make a decision on which routing to activate in order to begin communication.  
+During tests, the following delays have been measured:
 1. ECP (NFC-A/B): 
-   1. PC + PN532: `100`ms;
+   1. PC + PN532: `100` ms;
    2. Proxmark3: `1031640 / 13560000  * 1000 ~= 76` ms or ~45 polling iterations;
 2. FeliCa (NFC-F): 
    1. PC + PN532: `50` ms.
    2. Proxmark3: `547584 / 13560000  * 1000 ~= 40` ms or 3 polling iterations;
-3. CATHAY (NFC-A):
+3. GENERIC-A (NFC-A):
    1. Proxmark3, no delay:`1042912 / 13560000  * 1000 ~= 77` ms or ~150 polling iterations;
    2. Proxmark3, `5` ms delay: `979680 / 13560000  * 1000 ~= 72` ms or ~12 polling iterations;
 
@@ -202,14 +197,17 @@ As a result of the tests, we have the following findings:
   The sweet spot for response speed is about `5` ms guard time between polling attempts, which can reduce delay down to about `70` ms.
 
 
-## Express Mode priority
+## Express Mode types and priority
 
-Although not possible during normal operation, if a reader is polling for multiple cards using express mode that use different technology qualifiers for selection, the following technology priority will be applied:
+In normal deployments, a reader polls only for one express-mode technology at a time, but if a reader is polling for multiple express technology qualifiers, the following technology priority will be applied:
 1. ECP (`ecp`):
    1. Primary (`ecp.2.tci`);
-   2. EMV Fallback (`ecp.2.open_loop`);
-2. FeliCa (`felica.*`);
-3. CATHAY (`generic.type_a`). 
+   2. EMV Fallback (`ecp.2.open_loop`).
+2. FeliCa (`felica.*`):
+    * CJRC (`suica`) / Octopus (`cathay`) - chosen randomly depending on which frame is seen first.
+3. GenericA (`generic.type_a`):
+   * T-Money Korea / T-Union China - only one can be enabled at a time.
+4. ~~QuickMode/SinglePoll~~ (`quickmode`) - deprecated precursor to `generic.type_a` which wasn't compatible with ECP.
 
 <sub>There could be more valid express mode qualifiers available, but they have to be verified to be used on real passes before being listed here. If you have any info, feel free to create a PR.</sub>
 
@@ -217,7 +215,7 @@ Although not possible during normal operation, if a reader is polling for multip
 ## Quirks and bugs:
 
 - If polling for both ECP and FeliCa, the device will sometimes display the FeliCa pass in animation while actually selecting and emulating the ECP-triggered pass. The frequency of this bug depends on the polling loop interval.  
-- In IOS17 the new NameDrop frame does not follow the aforementioned rules fully, as the device reacts to it with an animation on the first iteration. Although the response itself is still returned as presented in examples.
+- In iOS 17 the new NameDrop frame does not follow the aforementioned rules fully, as the device reacts to it with an animation on the first iteration, although the response itself is still returned as presented in examples.
 
 
 # Structure
@@ -253,6 +251,7 @@ For V2 payload contains terminal configuration, terminal type, terminal subtype,
   ```
   - Configuration byte. Responsible for feature flags and data length. [More info below](#configuration-byte);  
   - Type contains terminal type:
+    - 0x00: Special (Ignore);
     - 0x01: Transit;
     - 0x02: Access;
     - 0x03: Identity (Handoff);
@@ -283,18 +282,18 @@ Data is a part of the payload in V2, it contains TCIs and extra data:
   XX XX XX...        XX..
   [TCIs (n)]   [Extra data (n)]
 ``` 
-- TCIs define an array of 3-byte long identifiers. Standard allows for 0-n long TCI arrays to be conveyed depending on terminal type and subtype;
+- TCIs define an array of 3-byte-long identifiers. TCI arrays of arbitrary length may be conveyed depending on terminal type and subtype;
 - Extra data contents depend on terminal type, subtype, and TCIs:
   * For transit it contains a [mask of supported EMV payment networks](#emv-transit-fallback) for fallback;
-  * For access/key readers it may contain a 8-byte long unique reader group identifier, which allows differentiating between them for passes of the same type;
+  * For access/key readers it may contain an 8-byte-long unique reader group identifier, which allows differentiating between them for passes of the same type;
   * For HomeKit it contains pairing information;
-  * For NameDrop it carries a 6-byte long BLE MAC address;
-  * For AirDrop it carries a 6-byte long zeroed-out value.
+  * For NameDrop it carries a 6-byte-long BLE MAC address;
+  * For AirDrop it carries a 6-byte-long zeroed-out value.
 
 
 ## TCI
 
-Terminal Capabilities Identifier (TCI), is an arbitrary three-byte-long value that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
+Terminal Capabilities Identifier (TCI) is an arbitrary three-byte-long value that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
 
 The following restrictions apply to the use of TCI:
 - Some TCIs are bound to a reader with a particular type and subtype (which requires V2), while others trigger for all types (support V1). It is not known if this behavior is a bug or was intentional;
@@ -302,7 +301,7 @@ The following restrictions apply to the use of TCI:
 
 TCI format is arbitrary, although several patterns related to the grouping of similar functionality can be established:
 - VAS: grouped with the last byte having a value of 0x00, 0x01, 0x02, 0x03 depending on mode;
-- Access (Car/Home/University/Office/Venue): The first byte is always 0x02, other two link to a particular pass provider;
+- Access (Car/Home/University/Office/Venue): The first byte is either 0x02/0x04/0x82 outright or has its high nibble set to 0x2, and the remaining bytes link to a particular property or system;
 - Transit: The first byte is always 0x03, other two link to a particular transit agency (and their pass);
 - CarKey: The first byte is always 0x01. The next three nibbles serve as a manufacturer identifier. The last nibble serves as the reader location index. This can be seen in wallet configuration JSON hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
 
@@ -314,48 +313,77 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 <sub> NA - not applicable; XX - any; ?? - unknown </sub>
 
 
-| Name                          | Version | Type | Subtype | TCI      | Data                       | Source                                       | Description                                                                                                                                            |
-|-------------------------------|---------|------|---------|----------|----------------------------|----------------------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| VAS or payment                | 01      | NA   | NA      | 00 00 00 | NA                         | Sniffing                                     | VAS ECP configurations are sometimes regarded to as VASUP-A(B)                                                                                         |
-| VAS and payment               | 01      | NA   | NA      | 00 00 01 | NA                         | Bruteforce                                   |                                                                                                                                                        |
-| VAS only                      | 01      | NA   | NA      | 00 00 02 | NA                         | Bruteforce                                   |                                                                                                                                                        |
-| Payment only                  | 01      | NA   | NA      | 00 00 03 | NA                         | Bruteforce                                   | As all other VAS frames, also serves as anti-CATHAY                                                                                                    |
-| GymKit                        | 01      | NA   | NA      | c3 00 00 | NA                         | Bruteforce                                   | The only way of triggering GymKit on an apple watch. There are other frames that trigger GymKit too, but they also trigger express transit for iPhones |
-| Ignore                        | 01      | NA   | NA      | cf 00 00 | NA                         | Sniffing                                     |                                                                                                                                                        |
-| Transit                       | 02      | 01   | 00      | XX XX XX | XX XX XX XX XX             | Bruteforce based on TFL example              | TCI refers to a transit agency, Data is a mask of allowed EMV payment networks for fallback                                                            |
-| Transit: Ventra               | 02      | 01   | 00      | 03 00 00 | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
-| Transit: HOP Fastpass         | 02      | 01   | 00      | 03 04 00 | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
-| Transit: WMATA                | 02      | 01   | 00      | 03 00 01 | ?? ?? ?? ?? ??             | Bruteforce                                   | Will select a Smart Trip card                                                                                                                          |
-| Transit: TFL                  | 02      | 01   | 00      | 03 00 02 | 79 00 00 00 00             | Sniffing: Payment Village/Proxmark community | Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                           |
-| Transit: LA Tap               | 02      | 01   | 00      | 03 00 05 | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
-| Transit: Clipper              | 02      | 01   | 00      | 03 00 07 | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
-| Transit: Navigo               | 02      | 01   | 00      | 03 09 5a | ?? ?? ?? ?? ??             | Bruteforce                                   |                                                                                                                                                        |
-| Access                        | 02      | 02   | XX      | XX XX XX | NA/XX XX XX XX XX XX XX XX | Assumption based on other data               | TCI refers to a pass provider, Data is reader group identifier                                                                                         |
-| Access: Venue                 | 02      | 02   | 00      | XX XX XX | NA                         | HID Reader configuration manual              |                                                                                                                                                        |
-| Access: Hotel: Hilton         | 02      | 02   | 00      | 02 ff ff | NA                         | File                                         | TCI might be a wildcard in case a booking is not made, needs further testing                                                                           |
-| Access: Home Key              | 02      | 02   | 06      | 02 11 00 | XX XX XX XX XX XX XX XX    | Sniffing/File                                | Having more than one key breaks usual ECP logic                                                                                                        |
-| Access: Car Pairing           | 02      | 02   | 09      | XX XX XX | NA                         | Bruteforce                                   | TCI refers to a combination of car manufacturer + reader position. Too many combinations involved. For rest refer to smp-device-content                |
-| Access: Car Pairing: BMW/MINI | 02      | 02   | 09      | 01 00 01 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: Mercedes | 02      | 02   | 09      | 01 02 01 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: Genesis  | 02      | 02   | 09      | 01 00 51 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: KIA      | 02      | 02   | 09      | 01 00 41 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: Hyundai  | 02      | 02   | 09      | 01 03 01 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: BYD      | 02      | 02   | 09      | 01 07 01 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: Denza    | 02      | 02   | 09      | 01 02 41 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: YW       | 02      | 02   | 09      | 01 02 B1 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: FCB      | 02      | 02   | 09      | 01 02 D1 | NA                         | Configuration                                |                                                                                                                                                        |
-| Access: Car Pairing: Lotus    | 02      | 02   | 09      | 01 00 91 | NA                         | Configuration                                |                                                                                                                                                        |
-| Identity                      | 02      | 03   | 00      | NA/00    | NA/00                      | Sniffing                                     | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead? |
-| AirDrop                       | 02      | 05   | 00      | 01 00 00 | 00 00 00 00 00 00          | Sniffing                                     | Sent only after device sees a NameDrop frame                                                                                                           |
-| NameDrop                      | 02      | 05   | 00      | 01 00 01 | XX XX XX XX XX XX          | Sniffing                                     | Data part contains a BLE MAC-address                                                                                                                   |
+| Name                                 | Version | Type | Subtype        | TCI          | Data                       | Source                                       | Description                                                                                                                                                       |
+|--------------------------------------|---------|------|----------------|--------------|----------------------------|----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VAS or payment                       | 01      | NA   | NA             | 00 00 00     | NA                         | Sniffing                                     | VAS ECP configurations are sometimes regarded to as VASUP-A(B)                                                                                                    |
+| VAS and payment                      | 01      | NA   | NA             | 00 00 01     | NA                         | Bruteforce                                   |                                                                                                                                                                   |
+| VAS only                             | 01      | NA   | NA             | 00 00 02     | NA                         | Bruteforce                                   |                                                                                                                                                                   |
+| Payment only                         | 01      | NA   | NA             | 00 00 03     | NA                         | Bruteforce                                   | As all other VAS frames, also serves as anti-generic-a                                                                                                            |
+| GymKit                               | 01      | NA   | NA             | c3 00 00     | NA                         | Bruteforce                                   | The only way of triggering GymKit on an apple watch. There are other frames that trigger GymKit too, but they also trigger express transit for iPhones            |
+| Ignore: (ECP1)                       | 01      | NA   | NA             | cf 00 00     | NA                         | Sniffing                                     |                                                                                                                                                                   |
+| Access: Seos: (ECP1)                 | 01      | NA   | NA             | 82 00 00     | NA                         | iOS firmware analysis                        | Only known access-related ECP v1 frame; iOS treats it as a special case                                                                                           |
+| Ignore (ECP2)                        | 02      | 00   | 02             | NA           | NA                         | Sniffing                                     | Prevents Apple devices from reacting to the field emitted by another Apple device                                                                                 |
+| Transit                              | 02      | 01   | 00             | XX XX XX     | XX XX XX XX XX             | Bruteforce based on TFL example              | TCI refers to a transit agency, Data is a mask of allowed EMV payment networks for fallback                                                                       |
+| Transit: Ventra                      | 02      | 01   | 00             | 03 00 00     | ?? ?? ?? ?? ??             | Bruteforce                                   | Chicago                                                                                                                                                           |
+| Transit: HOP Fastpass                | 02      | 01   | 00             | 03 04 00     | ?? ?? ?? ?? ??             | Bruteforce                                   | Portland                                                                                                                                                          |
+| Transit: WMATA                       | 02      | 01   | 00             | 03 00 01     | ?? ?? ?? ?? ??             | Bruteforce                                   | Washington, DC                                                                                                                                                    |
+| Transit: MBTA                        | 02      | 01   | 00             | 03 00 03     | 7f 00 00 00 00             | Sniffing                                     | MBTA Boston                                                                                                                                                       |
+| Transit: TFL                         | 02      | 01   | 00             | 03 00 02     | 79 00 00 00 00             | Sniffing: Payment Village/Proxmark community | Transit For London; Allows Amex, Visa, Mastercard, Maestro, VPay                                                                                                  |
+| Transit: LA Tap                      | 02      | 01   | 00             | 03 00 05     | ?? ?? ?? ?? ??             | Bruteforce                                   | Los Angeles                                                                                                                                                       |
+| Transit: Clipper                     | 02      | 01   | 00             | 03 00 07     | ?? ?? ?? ?? ??             | Bruteforce                                   | San Francisco Bay Area                                                                                                                                            |
+| Transit: Skåne                       | 02      | 01   | 00             | 03 08 00     | 78 00 00 00 00             | Sniffing                                     | Malmö                                                                                                                                                             |
+| Transit: Navigo                      | 02      | 01   | 00             | 03 09 5a     | 00 00 00 00 00             | Bruteforce/Sniffing                          | Île-de-France Mobilités Paris                                                                                                                                     |
+| Transit: Presto                      | 02      | 01   | 00             | 03 09 60     | ?? ?? ?? ?? ??             | Bruteforce                                   | Metrolinx Toronto                                                                                                                                                 |
+| Transit: KPT                         | 02      | 01   | 00             | 03 0a 85     | 78 00 00 00 00             | Sniffing                                     | Kyiv Public Transport                                                                                                                                             |
+| Access                               | 02      | 02   | XX             | XX XX XX     | NA/XX XX XX XX XX XX XX XX | Assumption based on other data               | TCI refers to a pass provider; Data is reader group identifier; For passes with reader identifier, having more than one with the same TCI breaks usual logic      |
+| Access: Venue                        | 02      | 02   | 00             | XX XX XX     | NA                         | HID Reader configuration manual              |                                                                                                                                                                   |
+| Access: Placeholder                  | 02      | 02   | 00             | 02 ff ff     | NA                         | File                                         | Used as a default value on development passes & unconfigured readers; Also encountered for hospitality passes, before they're configured for a particular booking |
+| Access: Seos: (ECP2)                 | 02      | 02   | 02             | 82 00 00     | NA                         | iOS firmware analysis                        | iOS handles this as a special case, pretending that ECP1 frame was encountered instead                                                                            |
+| Access: Home: HomeKey                | 02      | 02   | 04             | 02 11 00     | XX XX XX XX XX XX XX XX    | Sniffing/File                                | Home Key based on the `CopernicusHome` applet for use with HomeKit-based locks                                                                                    |
+| Access: Home: Aliro                  | 02      | 02   | 04             | 20 42 20     | XX XX XX XX XX XX XX XX    | Sniffing                                     | Home Key based on the `CopernicusAliro` applet for use with Matter-based locks                                                                                    |
+| Access: Car: (No Reader ID)          | 02      | 02   | 0[1/8]         | XX XX XX     | NA                         | Sniffing                                     |                                                                                                                                                                   |
+| Access: Car: (Reader ID)             | 02      | 02   | 0[5/a]         | XX XX XX     | XX XX XX XX XX XX XX XX    | Sniffing/Bruteforce                          |                                                                                                                                                                   |
+| Access: Car: Pairing: (No Reader ID) | 02      | 02   | 09             | XX XX XX     | NA                         | Bruteforce                                   |                                                                                                                                                                   |
+| Access: Car: Pairing: (Reader ID)    | 02      | 02   | 0b             | XX XX XX     | NA                         | Bruteforce                                   |                                                                                                                                                                   |
+| Access: Car: BMW/MINI                | 02      | 02   | 0[1/5/8/9/a/b] | 01 00 0[1-3] | NA/XX XX XX XX XX XX XX XX | Sniffing/Configuration                       |                                                                                                                                                                   |
+| Access: Car: KIA                     | 02      | 02   | 0[1/5/8/9/a/b] | 01 00 4[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Genesis                 | 02      | 02   | 0[1/5/8/9/a/b] | 01 00 5[1-7] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Lotus                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 00 9[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: NIO (1)                 | 02      | 02   | 0[1/5/8/9/a/b] | 01 00 a[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: NIO (2)                 | 02      | 02   | 0[1/5/8/9/a/b] | 01 00 b[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Skoda                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 00 e[1-6] | NA/XX XX XX XX XX XX XX XX | Sniffing                                     |                                                                                                                                                                   |
+| Access: Car: Audi                    | 02      | 02   | 0[1/5/8/9/a/b] | 01 01 1[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Polestar (1)            | 02      | 02   | 0[1/5/8/9/a/b] | 01 01 3[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Lynk & Co               | 02      | 02   | 0[1/5/8/9/a/b] | 01 01 a[1-6] | NA/XX XX XX XX XX XX XX XX | Sniffing/Configuration                       |                                                                                                                                                                   |
+| Access: Car: Zeekr                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 01 b[1-6] | NA/XX XX XX XX XX XX XX XX | Sniffing/Configuration                       |                                                                                                                                                                   |
+| Access: Car: Smart                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 01 e[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Mercedes                | 02      | 02   | 0[1/5/8/9/a/b] | 01 02 0[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: RAM                     | 02      | 02   | 0[1/5/8/9/a/b] | 01 02 2[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Denza                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 02 4[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Volvo (1)               | 02      | 02   | 0[1/5/8/9/a/b] | 01 02 9[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Polestar (2)            | 02      | 02   | 0[1/5/8/9/a/b] | 01 02 a[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: YW                      | 02      | 02   | 0[1/5/8/9/a/b] | 01 02 b[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: FCB                     | 02      | 02   | 0[1/5/8/9/a/b] | 01 02 d[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Hyundai                 | 02      | 02   | 0[1/5/8/9/a/b] | 01 03 0[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Chery                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 03 1[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Jetour                  | 02      | 02   | 0[1/5/8/9/a/b] | 01 03 3[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Xpeng                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 03 8[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Volvo(2)                | 02      | 02   | 0[1/5/8/9/a/b] | 01 04 0[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: SAIC Audi               | 02      | 02   | 0[1/5/8/9/a/b] | 01 04 6[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Voyah (1)               | 02      | 02   | 0[1/5/8/9/a/b] | 01 05 5[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Voyah (2)               | 02      | 02   | 0[1/5/8/9/a/b] | 01 05 6[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: BYD                     | 02      | 02   | 0[1/5/8/9/a/b] | 01 07 0[1-6] | NA/XX XX XX XX XX XX XX XX | Sniffing/Configuration                       |                                                                                                                                                                   |
+| Identity                             | 02      | 03   | 00             | NA/00        | NA/00                      | Sniffing                                     | Only ECP frame found IRL that lacks a full TCI. Could this mean that TCI length is variable or it could be missing and the extra byte is data instead?            |
+| AirDrop                              | 02      | 05   | 00             | 01 00 00     | 00 00 00 00 00 00          | Sniffing                                     | Sent only after device sees a NameDrop frame                                                                                                                      |
+| NameDrop                             | 02      | 05   | 00             | 01 00 01     | XX XX XX XX XX XX          | Sniffing                                     | Data part contains a BLE MAC-address                                                                                                                              |
 
-<sub> Source: Bruteforce - found by going over all config combinations; Sniffing - sniffed from a real reader; File - retrieved from pass file; Configuration - retreived from smp-device-content configuration json</sub>  
-<sub> Frames found via brute force may be working but not actually used. In case you have a real samle - let us know if it is different or the same</sub>
+<sub> Source: Bruteforce - found by going over all config combinations; Sniffing - sniffed from a real reader; File - retrieved from pass file; Configuration - retrieved from smp-device-content configuration json</sub>  
+<sub> Frames found via brute force may be working but not actually used. In case you have a real sample - let us know if it is different or the same.</sub>
 
 
 # Full frame examples
 
-Examples contain frames without CRC, which needs to be calculated according to the modulation used;
+<sub>Examples omit the CRC, which needs to be calculated according to the modulation used;</sub>
 
 - VAS or payment:  
   `6a01000000`  
@@ -378,7 +406,7 @@ Examples contain frames without CRC, which needs to be calculated according to t
     [Header]  [Version]   [TCI]  
   ```
 
-- Access: Hotel: Hilton:  
+- Access: Demo:  
   `6a02c3020002ffff`  
   ```
        6a         02        c3       02      00      02ffff  
@@ -395,7 +423,7 @@ Examples contain frames without CRC, which needs to be calculated according to t
     [NA]  [Payload length]
   ```
 
-- Access: Car Pairing: Mercedes:  
+- Access: Car: Pairing: Mercedes:  
   `6a02c30209010201`
   ```
        6a         02        c3       02      09      010201 
@@ -405,33 +433,39 @@ Examples contain frames without CRC, which needs to be calculated according to t
 
 Note that for examples to work 8-bit byte setting should be set in case of NFC-A, 2-byte CRC has to be appended beforehand.
 
-If you have a Proxmark3, you can test those frames using commands `hf 14a raw -akc` for NFC-A and `hf 14b raw -kc -d` for NFC-B. After sending the frame try polling the device using the `hf 14a reader -sk` or `hf 14b reader` command.
+If you have a Proxmark3, ECP can be configured using `hf 14a config --pla <frame>` option for automatic use with other `hf 14a` commands.
 
 
 # Extras
 
-## EMV Transit Fallback 
+## EMV Transit Fallback
 
 Express mode for EMV is triggered as a fallback in case a pass for a particular transit TCI has not been found in a system.
-EMV brand support mask is contained in the last 5 bytes of the frame's data. At the current moment, only the first byte is known to be used IRL.
+EMV brand support mask, sometimes referred to as the open-loop mask, is contained in the last 5 bytes of the transit frame data. At the moment, the first byte is widely used, and the rightmost bit of the second byte has also been mapped in the field.
 
-The following table presents an encoding scheme  for the first byte (bit 00 is the rightmost), with 1 (true) in a particular position signifying support:
+The following table presents the known encoding scheme, with bit 00 being the rightmost, and a value of `1` meaning the brand is supported:
 
-| Bit   | 07  | 06                     | 05   | 04      | 03         | 02  | 01  | 00            |
-| ----- | --- | ---------------------- | ---- | ------- | ---------- | --- | --- | ------------- |
-| Brand | ??  | Possibly VPAY/Electron | VISA | MAESTRO | MASTERCARD | ??  | ??  | Possibly AMEX |
+| Byte ↓ / Bit → | 07  | 06               | 05   | 04      | 03         | 02          | 01            | 00   |
+| -------------- | --- |------------------|------| ------- |------------|-------------|---------------|------|
+| Byte 0         | ??  | _VPAY/Electron?_ | VISA | MAESTRO | MASTERCARD | _DISCOVER_? | _DINERSCLUB_? | AMEX |
+| Byte 1         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | JCB  |
+| Byte 2         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | ??   |
+| Byte 3         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | ??   |
+| Byte 4         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | ??   |
 
 
 To find a bit responsible for your card network, you can modify a particular bit inside the mask. Afterward, having activated a specific card brand for express mode on your device, observe if the express mode will activate when brought near to a test reader.
 
+Known unsupported networks (not represented in the table above):
+- China Union Pay (CUP).
+
+Known supported networks with unmapped bits (present in the field but undefined in the table):
+- Cartes Bancaires (CB) — confirmed to function, but the corresponding byte/bit has not yet been identified.
+
 
 ## Strong customer authentication
 
-Some applets have the ability to modify behavior based on the conditions that the transaction has been started under: 
-
-- Unified Access applet potentially has the ability to guarantee to the reader, if requested, that a transaction has been initiated via manual authentication, which protects against exciting a device with an express ECP frame and using it on a reader that mandates SCA;
-- When EMV is used with express mode, it modifies transaction parameters that need to be used for a device to produce a successful transaction + check mark.
-
+When EMV is used with express mode, it modifies transaction parameters that need to be used for a device to produce a successful transaction + check mark.
 Requirements regarding the EMV transaction seem to be dependent on a payment network brand (as each has a separate applet implementation):
 - Mastercard/Maestro:
   - MCC is in a transit category
@@ -443,6 +477,16 @@ Requirements regarding the EMV transaction seem to be dependent on a payment net
 Other card brands may have different success conditions and behavior changes. If you have any info, feel free to create a PR.
 
 
+## Terminal Requested Authentication
+
+ECP2 allows enabling Terminal Requested Authentication (TRA) by clearing bit 06 of the configuration byte. When that bit is cleared, express mode stays off and the device surfaces the matching card for manual authentication.
+
+The device enforces TRA differently depending on the credential technology, preventing a relay from an express-enabled reader to a TRA-activated one:
+- Unified Access (Aliro/Home/Car/Access): readers send a transaction-type flag that also feeds the cryptographic input. The device’s policy determines whether that flag requires manual authentication.
+- MIFARE DESFire: specific DESFire application IDs can be marked “not available with express mode,” so a reader cannot select them until the user authenticates manually.
+- HID Seos: TBD.
+
+
 ## Enhanced Contactless Protocol
 
 When first researching the topic of ECP, in some rare situations I noticed that some brochures refer to ECP as "Enhanced Contactless Protocol". The first assumption was either made to put potential researchers off the track or that it was a simple mistake when creating the material.
@@ -451,7 +495,7 @@ When looking into some promotional documents, "Enhanced Contactless Protocol" ar
 After a bit of analysis, it turned out that DESFire protocol indeed has a special command created specifically for Apple devices, the sole purpose of which is to notify a device that a transaction has been done successfully.  
 This leads to the thought that ECP (Polling) and ECP (Protocol) are indeed two different terms when used by Apple and/or their partners. In conclusion, a new explanation for ECP (Protocol) has been formulated.
 
-**Enhanced Contactless Protocol** is a protocol that implements commands that allow to explicitly notify an end device about the state of a transaction, without resorting to making any assumptions about a particular command sequence or operations that need to be done for a transaction to be deemed successful (or not).
+**Enhanced Contactless Protocol** is a protocol that implements commands that allow the reader to explicitly notify an end device about the state of a transaction, without resorting to making any assumptions about a particular command sequence or operations that need to be done for a transaction to be deemed successful (or not).
 
 
 ## Success conditions
@@ -460,26 +504,27 @@ An NFC transaction is deemed successful when a device produces a checkmark on a 
 Failure condition is displayed with an exclamation mark and an optional error popup/device vibration.
 
 NFC protocols can be divided into two categories, depending on how a UX success condition is determined:
-- Explicit (**Enhanced Contactless Protocol**).
-- Implicit;
+- Explicit (**Enhanced Contactless Protocol**);
+- Implicit.
 
 Following protocols are considered "enhanced" as they implement explicit status commands. 
 
 | Protocol name                                                   | Success condition command                                                         | Failure condition                                                       | Notes |
-| --------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----- |
-| Mifare DESFire                                                  | NOTIFY_TRANSACTION_SUCCESS(`0xEE`)                                                | DESELECT/TRESET without the command                                     |       |
+| --------------------------------------------------------------- |-----------------------------------------------------------------------------------| ----------------------------------------------------------------------- | ----- |
+| Mifare DESFire                                                  | NOTIFY_TRANSACTION_SUCCESS/ECP_LCI(`0xEE`)                                        | DESELECT/TRESET without the command                                     |       |
 | Unified Access (all CarKey, HomeKey, AccessKey, Aliro variants) | OP_CONTROL_FLOW(`0x3C`) with success flags or DESELECT after attestation exchange | OP_CONTROL_FLOW(`0x3C`) with failure flags or DESELECT/TRESET before it |       |
 
-<sub>DESFire command name was made up by me as it's newely discovered, no info about it online.</sub>
+<sub>DESFire command name was made up by me as it's newly discovered, no info about it online.</sub>
 
 Following protocols have implicit transaction status detection:  
 
-| Protocol name | Success condition                                                                                             | Failure condition                       | Notes                                                                                                                                                                                                                                                                          |
-| ------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| T-Union       | DESELECT/TRESET after AID selection                                                                           | DESELECT/TRESET before AID selection    |                                                                                                                                                                                                                                                                                |
-| FeliCa        | 0.5 second delay after TRESET if REQUEST_SERVICE(`0x02`) has been used. 5 second delay after TRESET otherwise | READ/WRITE commands with invalid keys   | Current success condition causes lots of confusion for users, as a top-up machine may do a TRESET and an additional POLLING for data verification, but it causes a check mark to appear thus misleading users, making them think that they can take the device out prematurely. |
-| EMV           | Cryptogram generation (EMV mode) or magstripe data read (MAG compatability mode)                              | DSELECT/TRESET before success condition |                                                                                                                                                                                                                                                                                |
-| VAS           | Successful GET_DATA followed with a DESELECT/TRESET                                                           | DSELECT/TRESET after failed GET_DATA    |                                                                                                                                                                                                                                                                                |
+| Protocol name | Success condition                                                                                             | Failure condition                        | Notes                                                                                                                                                                                                                                                                          |
+|---------------|---------------------------------------------------------------------------------------------------------------|------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| T-Union       | DESELECT/TRESET after AID selection                                                                           | DESELECT/TRESET before success condition |                                                                                                                                                                                                                                                                                |
+| T-Money       | DESELECT/TRESET after SELECT + any successful protocol command                                                | DESELECT/TRESET before success condition |                                                                                                                                                                                                                                                                                |
+| FeliCa        | 0.5 second delay after TRESET if REQUEST_SERVICE(`0x02`) has been used. 5 second delay after TRESET otherwise | READ/WRITE commands with invalid keys    | Current success condition causes lots of confusion for users, as a top-up machine may do a TRESET and an additional POLLING for data verification, but it causes a check mark to appear thus misleading users, making them think that they can take the device out prematurely |
+| EMV           | Cryptogram generation (EMV mode) or magstripe data read (MAG compatibility mode)                              | DESELECT/TRESET before success condition  |                                                                                                                                                                                                                                                                                |
+| VAS           | Successful GET_DATA followed with a DESELECT/TRESET                                                           | DESELECT/TRESET after failed GET_DATA     |                                                                                                                                                                                                                                                                                |
 
 Other protocols supported by Apple Wallet, such as:
 - BMAC, SPTCC (Legacy China Transit);
@@ -490,7 +535,7 @@ Were not researched due to lack of samples to do tests on. If you have access to
 
 ## Service mode
 
-Service mode, also internally called "Plastic card mode" is a feature that is available on some contactless passes. It is intended to be used when you need to give a device to someone to conduct service/help operations with the card.
+Service mode, also called "Plastic card mode" is a feature that is available on some contactless passes. It is intended to be used when you need to give a device to someone to conduct service/help operations with the card.
 
 After some experimentation, the following changes to the behavior have been noticed when this mode is activated:  
 - Device increases the grace period before it ends the NFC authorization;
@@ -498,28 +543,29 @@ After some experimentation, the following changes to the behavior have been noti
 - Device generates a transaction notification/receipt after the service mode period ends (No SE notifications to the SEP?).  
 
 
-Judging from this information, it is safe to assume that what this mode does is disables regular transaction status tracking and end condition fulfillment, allowing even an incompatible/slow/unique reader to conduct any NFC transaction sequences imaginable, with DESELECTs/TRESETs and so on. Extra time in comparison to regular NFC auth is also given in order to accommodate for all possible service processes and communication delays.
+Judging from this information, it is safe to assume that this mode disables regular transaction status tracking and end-condition fulfillment, allowing even an incompatible/slow/unique reader to conduct any NFC transaction sequences imaginable, with DESELECTs/TRESETs and so on. Extra time compared to regular NFC auth is also given to accommodate all possible service processes and communication delays.
 
 
-## Polling Loop Filters
+## Polling Loop Annotations
+
+Android 15 introduced three brand-new concepts to the operating system's NFC stack:
+- [Observe Mode](https://developer.android.com/develop/connectivity/nfc/hce#observe-mode) - a special discovery state of the NFC controller;
+- Polling Loop Annotations - non-standard frames sent by a reader in a discovery loop to provide additional context about the reader field to listening devices;
+- [Polling Loop Filters](https://developer.android.com/reference/android/nfc/cardemulation/CardEmulation#registerPollingLoopFilterForService(android.content.ComponentName,%20java.lang.String,%20boolean)) - Polling Loop Annotation patterns that applications request the OS to look out for.
 
 
-Android 15 introduced two brand-new concepts to the operating system's NFC stack:
-- [Observe Mode](https://developer.android.com/reference/android/nfc/NfcAdapter#isObserveModeSupported());
-- [Polling Loop Filters](https://developer.android.com/reference/android/nfc/cardemulation/CardEmulation#registerPollingLoopFilterForService(android.content.ComponentName,%20java.lang.String,%20boolean)).
+Observe Mode works by suppressing the ability of a device to respond to external NFC polling frames by default, instead passing the information about the polling loop down to the operating system and application level, allowing the former to decide on what to do next.
 
-
-Observe mode works by suppressing the ability of a device to respond to external NFC polling frames by default, instead passing the information about the polling loop down to the operating system and application level, allowing the former to decide on what to do next.
-
-The following steps could include any of the following, based on characteristics of the polling loop as deemed fit by the device:
+Based on the polling loop characteristics, the system can take the following actions:
 * Releasing the NFC lock, allowing the transaction to go through automatically (this is the way it worked before anyway).
 * Requiring a user intervention for a specific action:
   - Authentication. For instance, this would entirely fix an issue where an Android phone would fail EMV transaction due to not being unlocked properly, or due to an unlock happening too early.
-  - Credential sub-selection. For instance, a non-EMV reader could be detected via the usage of REQA frames (instead of WUPA), and a user could be asked to choose an appropriate access pass if one has multiple.
+  - Credential suggestion. For instance, a non-EMV reader could be detected via the usage of REQA frames (instead of WUPA), and a user could be asked to choose an appropriate access pass if multiple cards are configured on the device.
+  - Credential selection. A specific polling loop annotation could indicate that a particular pass is to be used with the reader, enabling automatic use even in case of a potential AID conflict.
 
 As a side effect, Observe Mode enables an additional feature, called "Polling Loop Filters". It allows any NFC-powered application to define a specific polling data pattern so that the operating system delivers control of the NFC communication to that application regardless of which app is set as a primary wallet application.
 
-Those cases partially cover the feature set that ECP has, as described in [Overview section](#Overview), meaning that anticollision-level credential selection and NFC polling loop augmentation is now available on both Apple and Android devices.
+Those cases partially cover the feature set that ECP has, as described in [Overview section](#overview), meaning that anticollision-level credential selection and NFC polling loop augmentation is now available on both Apple and Android devices.
 
 
 # Contributing
@@ -529,7 +575,7 @@ Those cases partially cover the feature set that ECP has, as described in [Overv
 The best way to help is to provide more samples of ECP frames and TCIs.  
 Especially interesting (missing) are the following:
 - TCIs of transit agencies that use EMV only (transit agency list at [smp-device-content](https://smp-device-content.apple.com/static/region/v2/marketgeos-ad96b072-bd96-4d3c-aff6-6cc477f0d88a.json)):
-  - United Britain:
+  - United Kingdom:
     - London (Possibly different for buses?);
   - United States:
     - New York (MTA);
@@ -545,22 +591,15 @@ Especially interesting (missing) are the following:
     - Tartu.
   - Finland:
     - Turku.
-  - Sweeden:
-    - Malmo.
   - Belarus:
     - Minsk.
-  - Ukraine:
-    - Kyiv.
-- Access passes (There might be many unknown variations, so any samples would be welcome):
+- Access passes and keys (There might be many unknown variations, so any samples would be welcome):
   - University;
   - Office;
   - Venues;
   - Hotels;
   - Multi-family housing;
-- Keys:
   - Car (Real device);
-  - Access;
-- HomeKit pairing;
 - Identity (Standalone reader). Be careful not to get on a no-fly list if you dare to go and try sniffing data from it.
 
 Meanwhile, some other unanswered questions remain, which require further analysis and testing, such as:
@@ -576,12 +615,12 @@ If you have any findings or thoughts on this matter, feel free to discuss them i
 
 ## Collecting information
 
-### Analysing pass files
+### Analyzing pass files
 
 The easiest way of retrieving useful information that doesn't require any special tools is `.pkpass` file analysis.  
 It can be done in the following way: 
 1. Extract pass files:
-   1. On MacOS, from `~/Library/Passes/Cards/`;
+   1. On macOS, from `~/Library/Passes/Cards/`;
    2. On jailbroken iPhone from `~/Library/Passes/Cards/`;
    3. On a non-jailbroken iPhone, via an encrypted backup extracted at path `HomeDomain/Library/Passes/Cards` (Whoever patched it, send my regards).  
    File extraction can be done using an app such as iMazing, [iOSBackup](https://github.com/avibrazil/iOSbackup) or similar tools.
@@ -608,7 +647,7 @@ It can be done in the following way:
                    "openLoopExpressMask":"0800000000"
                }
            ],
-           "supportedTransitNetworkIdentifiers":[],
+           "supportedTransitNetworkIdentifiers":[]
        }
      ]
    }
@@ -659,7 +698,7 @@ To do that, you have to program an NFC reader that does the following in a loop:
 3. Turn on the RF field;
 4. Attempt to increment/modify one of the values in an ECP frame;
 5. Send the ECP frame 3 times in 0.5-second intervals;
-6. Attempt wake-up with anticollision; If successful continue, otherwise return to 1); 
+6. Attempt wake-up with anticollision; If successful continue, otherwise return to step 1; 
 7. Observe results, save useful info (uid, ats, sak, etc) try doing PPSE, DESFire functions, selecting basic AIDs.
 
 A couple of tips:
@@ -682,7 +721,7 @@ A couple of tips:
 
 * Resources that helped with research:
   - Code analysis:
-    - [IOS16 Runtime Headers](https://developer.limneos.net/?ios=16.3).
+    - [iOS 16 Runtime Headers](https://developer.limneos.net/?ios=16.3).
   - Apple resources:
     - [Apple Developer Documentation](https://developer.apple.com/documentation/);
     - [Apple Wallet configuration json](https://smp-device-content.apple.com/static/region/v2/config.json);
@@ -695,7 +734,7 @@ A couple of tips:
     - [Android 15 Polling Loop Filters](https://developer.android.com/reference/android/nfc/cardemulation/CardEmulation#registerPollingLoopFilterForService(android.content.ComponentName,%20java.lang.String,%20boolean)).
   - Projects that inspired research:
     - [Arduino Octopus Card Reader](https://youtu.be/H8cRV5nNZq4) - sparked interest in trying to replicate Express Mode, which led to ECP;
-    - [Practical EMV: Express Tranit exploit](https://practical_emv.gitlab.io/assets/practical_emv_rp.pdf) - sparked interest in ECP research. ECP info there was redacted, don't bother looking for it;
+    - [Practical EMV: Express Transit exploit](https://practical_emv.gitlab.io/assets/practical_emv_rp.pdf) - sparked interest in ECP research. ECP info there was redacted, don't bother looking for it;
     - [TFL ECP frame found by Payment Village](https://www.paymentvillage.org/resources/hand-in-your-pocket-without-you-noticing-vulnerabilities-of-mobile-wallets).
   - Forums:
     - [NXP mention that ECP HALs or docs are only given to licensed partners](https://community.nxp.com/t5/NFC/Do-CLRC66302HN-and-CLRC66303HN-support-Apple-s-ECP-Enhanced/m-p/1445260#M9362);
@@ -716,11 +755,12 @@ A couple of tips:
   - Other:
     - [Global Platform Contactless Registry Service](https://globalplatform.org/wp-content/uploads/2016/01/GPC_2.2_C_ContactlessServices_v1.1.1.pdf) [(Archive)](https://web.archive.org/web/20230824143113/https://globalplatform.org/wp-content/uploads/2016/01/GPC_2.2_C_ContactlessServices_v1.1.1.pdf);
     - [Strong Customer Authentication for Apple Pay Security Target](https://www.ssi.gouv.fr/uploads/2022/03/anssi-cible-cc-2022_04en.pdf) [(Archive)](https://web.archive.org/web/20230824144712/https://www.ssi.gouv.fr/uploads/2022/03/anssi-cible-cc-2022_04en.pdf);
-    - [Global Platform Card Specification](https://globalplatform.org/wp-content/uploads/2018/05/GPC_CardSpecification_v2.3.1_PublicRelease_CC.pdf) [(Archive)](https://web.archive.org/web/20230725201402/https://globalplatform.org/wp-content/uploads/2018/05/GPC_CardSpecification_v2.3.1_PublicRelease_CC.pdf).
+    - [Global Platform Card Specification](https://globalplatform.org/wp-content/uploads/2018/05/GPC_CardSpecification_v2.3.1_PublicRelease_CC.pdf) [(Archive)](https://web.archive.org/web/20230725201402/https://globalplatform.org/wp-content/uploads/2018/05/GPC_CardSpecification_v2.3.1_PublicRelease_CC.pdf);
+    - [Wallet Payment Networks](https://theapplewiki.com/wiki/Wallet_Payment_Networks).
 * Devices and software used for analysis:
   - Proxmark3 Easy - used to sniff ECP frames out. Proxmark3 RDV2/4 can also be used;
   - [Proxmark3 Iceman Fork](https://github.com/RfidResearchGroup/proxmark3) - firmware for Proxmark3;
-  - [RFID Tools app](https://play.google.com/store/apps/details?id=com.rfidresearchgroup.rfidtools) - app that can used to control OFW Proxmark RDV4 from an Android device while in field;
+  - [RFID Tools app](https://play.google.com/store/apps/details?id=com.rfidresearchgroup.rfidtools) - app that can be used to control OFW Proxmark RDV4 from an Android device while in field;
   - [Android 15 Observe Mode Demo App](https://github.com/kormax/android-observe-mode-demo) - app used to collect polling frame information with a regular mobile phone;
   - [Termux](https://github.com/termux/termux-app) - can be used to run Iceman Fork Proxmark client in field;
   - [TCPUART transparent Bridge](https://play.google.com/store/apps/details?id=com.hardcodedjoy.tcpuart) - used to connect Proxmark to a client running in Termux;
