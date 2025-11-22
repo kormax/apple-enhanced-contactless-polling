@@ -485,16 +485,16 @@ Other card brands may have different success conditions and behavior changes. If
 ECP2 allows enabling Terminal Requested Authentication (TRA) by clearing bit 06 of the configuration byte. When that bit is cleared, express mode stays off and the device surfaces the matching card for manual authentication.
 
 The device enforces TRA differently depending on the credential technology, preventing a relay from an express-enabled reader to a TRA-activated one:
-- Unified Access (Aliro/Home/Car/Access): readers send a transaction-type flag that also feeds the cryptographic input. The device’s policy determines whether that flag requires manual authentication.
-- MIFARE DESFire: specific DESFire application IDs can be marked “not available with express mode,” so a reader cannot select them until the user authenticates manually.
-- HID Seos: TBD.
+- Unified Access (Aliro/Home/Car/Access): readers send a transaction-type flag that also feeds the cryptographic input. The device’s policy determines whether that flag requires manual authentication;
+- MIFARE DESFire: specific DESFire application IDs can be marked “not available with express mode,” so a reader cannot select them until the user authenticates manually;
+- HID Seos: To be verified; Likely similar to DESFire, where individual ADFs can be flagged as unavailable in express mode.
 
 
 ## Enhanced Contactless Protocol
 
-When first researching the topic of ECP, in some rare situations I noticed that some brochures refer to ECP as "Enhanced Contactless Protocol". The first assumption was either made to put potential researchers off the track or that it was a simple mistake when creating the material.
+Early ECP research found occasional references to "Enhanced Contactless Protocol", which was assumed to be a mistake or misinterpretation in the original promotional materials.
 
-When looking into some promotional documents, "Enhanced Contactless Protocol" arose once again, this time in the context of "DESFire ECP compatibility mode", which rang a bell.  
+In one of the reader promotional documents, "Enhanced Contactless Protocol" arose once again, this time in the context of "DESFire ECP compatibility mode", which rang a bell.  
 After a bit of analysis, it turned out that DESFire protocol indeed has a special command created specifically for Apple devices, the sole purpose of which is to notify a device that a transaction has been done successfully.  
 This leads to the thought that ECP (Polling) and ECP (Protocol) are indeed two different terms when used by Apple and/or their partners. In conclusion, a new explanation for ECP (Protocol) has been formulated.
 
@@ -676,7 +676,7 @@ Thanks to Observe Mode feature introduced in Android 15, most flagship mobile ha
 
 Sniffing can also be done using the functionality of a device like Proxmark (Easy or RDV2/4) connected to a Proxmark client inside of Termux running on an Android phone.  
 A couple of tidbits encountered:
-- The first time using the app I encountered an issue connecting to Proxmark3 directly as Termux did not connect a device, TCPUART app had to be installed to forward serial connection over the local network to be used in Proxmark client inside of Termux;
+- On first use, the app failed to connect directly to Proxmark3 because Termux did not attach the device; installing TCPUART to forward the serial connection over the local network allowed use inside the Termux Proxmark client;
 - Some Android phones won't power Proxmark properly through direct connection. Connecting via a USB-C to USB-A dongle can help to overcome this issue.
 
 More info on installing and running Proxmark client on your Android device [here](https://github.com/RfidResearchGroup/proxmark3/blob/master/doc/termux_notes.md).
@@ -685,7 +685,7 @@ The command needed to collect traces is `hf 14a sniff`, after activating the com
 
 After that, press a button on a device, and traces will be downloaded and can be viewed with a `hf 14a list` command. You'll know which ones are the ones.  
 
-Some other devices might also be able to sniff the frames, but due to a lack of personal experience, I cannot recommend any.
+Some other devices might also be able to sniff the frames, but none can be recommended here without firsthand validation.
 
 
 ### Bruteforce
