@@ -293,17 +293,20 @@ Data is a part of the payload in V2, it contains TCIs and extra data:
 
 ## TCI
 
-Terminal Capabilities Identifier (TCI) is an arbitrary three-byte-long value that establishes reader relation to a particular pass type (Home key, Car key, Transit) or system feature (Ignore, GymKit, AirDrop, NameDrop).
+Terminal Capabilities Identifier (TCI) is an arbitrary three-byte-long value that establishes a reader's relation to a particular pass type (Home key, Car key), system feature (Ignore, GymKit, Identity, AirDrop, NameDrop), or reader installation (Access, Transit).
 
-The following restrictions apply to the use of TCI:
-- Some TCIs are bound to a reader with a particular type and subtype (which requires V2), while others trigger for all types (support V1). It is not known if this behavior is a bug or was intentional;
-- TCIs intended for V1 cannot be used with V2.
+The following restrictions apply to the use of TCIs:
+- TCIs intended for ECP1 **cannot** be used with ECP2;
+- Access and Transit TCIs intended for ECP2 can be used with ECP1, but Transit TCIs may trigger GymKit pairing on Apple Watch if a matching pass is not installed on it;
+- In ECP2, some TCIs are bound to a reader with a particular type.
 
 TCI format is arbitrary, although several patterns related to the grouping of similar functionality can be established:
 - VAS: grouped with the last byte having a value of 0x00, 0x01, 0x02, 0x03 depending on mode;
 - Access (Car/Home/University/Office/Venue): The first byte is either 0x02/0x04/0x82 outright or has its high nibble set to 0x2, and the remaining bytes link to a particular property or system;
 - Transit: The first byte is always 0x03, other two link to a particular transit agency (and their pass);
 - CarKey: The first byte is always 0x01. The next three nibbles serve as a manufacturer identifier. The last nibble serves as the reader location index. This can be seen in wallet configuration JSON hosted at [smp-device-content.apple.com](https://smp-device-content.apple.com/static/region/v2/config.json).
+
+A single pass may use one or more TCI values, with the latter option present in passes provisioned to work with multiple installations at the same time.
 
 
 # Configuration examples
@@ -368,7 +371,7 @@ Note that CRC A/B, ECP Header, Configuration bytes are omitted from this table.
 | Access: Car: Chery                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 03 1[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
 | Access: Car: Jetour                  | 02      | 02   | 0[1/5/8/9/a/b] | 01 03 3[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
 | Access: Car: Xpeng                   | 02      | 02   | 0[1/5/8/9/a/b] | 01 03 8[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
-| Access: Car: Volvo(2)                | 02      | 02   | 0[1/5/8/9/a/b] | 01 04 0[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
+| Access: Car: Volvo (2)               | 02      | 02   | 0[1/5/8/9/a/b] | 01 04 0[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
 | Access: Car: SAIC Audi               | 02      | 02   | 0[1/5/8/9/a/b] | 01 04 6[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
 | Access: Car: Voyah (1)               | 02      | 02   | 0[1/5/8/9/a/b] | 01 05 5[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
 | Access: Car: Voyah (2)               | 02      | 02   | 0[1/5/8/9/a/b] | 01 05 6[1-6] | NA/XX XX XX XX XX XX XX XX | Configuration                                |                                                                                                                                                                   |
@@ -445,13 +448,13 @@ EMV brand support mask, sometimes referred to as the open-loop mask, is containe
 
 The following table presents the known encoding scheme, with bit 00 being the rightmost, and a value of `1` meaning the brand is supported:
 
-| Byte ↓ / Bit → | 07  | 06               | 05   | 04      | 03         | 02          | 01            | 00   |
-| -------------- | --- |------------------|------| ------- |------------|-------------|---------------|------|
-| Byte 0         | ??  | _VPAY/Electron?_ | VISA | MAESTRO | MASTERCARD | _DISCOVER_? | _DINERSCLUB_? | AMEX |
-| Byte 1         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | JCB  |
-| Byte 2         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | ??   |
-| Byte 3         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | ??   |
-| Byte 4         | ??  | ??               | ??   | ??      | ??         | ??          | ??            | ??   |
+| Byte ↓ / Bit → | 07      | 06       | 05   | 04         | 03      | 02             | 01       | 00   |
+| -------------- | ------- |----------|------|------------|---------|----------------|----------|------|
+| Byte 0         | _VPAY_? | ELECTRON | VISA | MASTERCARD | MAESTRO | _DINERS CLUB_? | DISCOVER | AMEX |
+| Byte 1         | ??      | ??       | ??   | ??         | ??      | ??             | ??       | JCB  |
+| Byte 2         | ??      | ??       | ??   | ??         | ??      | ??             | ??       | ??   |
+| Byte 3         | ??      | ??       | ??   | ??         | ??      | ??             | ??       | ??   |
+| Byte 4         | ??      | ??       | ??   | ??         | ??      | ??             | ??       | ??   |
 
 
 To find a bit responsible for your card network, you can modify a particular bit inside the mask. Afterward, having activated a specific card brand for express mode on your device, observe if the express mode will activate when brought near to a test reader.
